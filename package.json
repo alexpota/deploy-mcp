@@ -1,0 +1,80 @@
+{
+  "name": "deploy-mcp",
+  "version": "0.1.0",
+  "description": "Universal deployment tracker for AI assistants",
+  "keywords": [
+    "mcp",
+    "deployment",
+    "vercel",
+    "ai",
+    "claude",
+    "deployment-tracking"
+  ],
+  "author": "Alex Potapenko <alex.potapenko.dev@gmail.com>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/alexpota/deploy-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexpota/deploy-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alexpota/deploy-mcp/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "deploy-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "SECURITY.md"
+  ],
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "dev:worker": "wrangler dev",
+    "build": "tsup src/index.ts src/worker.ts --format esm --platform node --target node22",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "clean": "rm -rf dist",
+    "deploy": "npm run build && npx wrangler deploy --env=production",
+    "prepare": "husky",
+    "prepublishOnly": "npm run clean && npm run build && npm run type-check && npm run lint && npm test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.2",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
+    "eslint": "^9.32.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.4",
+    "prettier": "^3.6.2",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8",
+    "wrangler": "^4.27.0"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}

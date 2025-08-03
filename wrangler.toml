@@ -1,0 +1,10 @@
+name = "deploy-mcp"
+main = "dist/worker.js"
+compatibility_date = "2025-01-01"
+
+[env.production]
+name = "deploy-mcp-production"
+
+[[env.production.routes]]
+pattern = "deploy-mcp.io"
+custom_domain = true
