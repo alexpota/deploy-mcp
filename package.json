@@ -1,6 +1,6 @@
 {
   "name": "deploy-mcp",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Universal deployment tracker for AI assistants",
   "keywords": [
     "mcp",
@@ -50,13 +50,13 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.11.2",
-    "zod": "^3.24.1"
+    "zod": "^4.0.14"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250803.0",
-    "@types/node": "^22.10.5",
-    "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.38.0",
+    "@types/node": "^24.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.1-alpha.7",
+    "@typescript-eslint/parser": "^8.38.1-alpha.7",
     "eslint": "^9.32.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
@@ -65,7 +65,7 @@
     "prettier": "^3.6.2",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4",
     "wrangler": "^4.27.0"
   },
