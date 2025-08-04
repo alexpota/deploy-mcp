@@ -37,6 +37,7 @@
     "dev:worker": "wrangler dev",
     "build": "tsup src/index.ts src/worker.ts --format esm --platform node --target node22",
     "test": "vitest",
+    "test:ci": "vitest --run",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "type-check": "tsc --noEmit",
@@ -52,7 +53,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250109.0",
+    "@cloudflare/workers-types": "^4.20250803.0",
     "@types/node": "^22.10.5",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
@@ -64,8 +65,8 @@
     "prettier": "^3.6.2",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3",
-    "vitest": "^2.1.8",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
     "wrangler": "^4.27.0"
   },
   "engines": {
