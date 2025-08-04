@@ -102,7 +102,7 @@ function mapDeploymentStatus(
   payload: any
 ): "success" | "failed" | "building" | "error" | "unknown" {
   switch (platform) {
-    case "vercel":
+    case "vercel": {
       const vercelPayload = payload as VercelWebhookPayload;
       switch (vercelPayload.deployment?.state) {
         case "READY":
@@ -116,8 +116,9 @@ function mapDeploymentStatus(
         default:
           return "unknown";
       }
+    }
 
-    case "netlify":
+    case "netlify": {
       const netlifyPayload = payload as NetlifyWebhookPayload;
       switch (netlifyPayload.state) {
         case "ready":
@@ -129,6 +130,7 @@ function mapDeploymentStatus(
         default:
           return "unknown";
       }
+    }
 
     case "railway":
       // Railway webhook format (to be implemented)
@@ -200,7 +202,7 @@ export async function handleWebhook(
       `${platform} webhook payload:`,
       JSON.stringify(payload, null, 2)
     );
-  } catch (error) {
+  } catch {
     return {
       success: false,
       message: "Invalid JSON payload",
@@ -237,8 +239,8 @@ export async function handleWebhook(
  * Rate limiting helper (future enhancement)
  */
 export async function checkRateLimit(
-  request: Request,
-  env: Env
+  _request: Request,
+  _env: Env
 ): Promise<boolean> {
   // TODO: Implement rate limiting using KV storage
   // For now, always allow

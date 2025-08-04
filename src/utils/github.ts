@@ -41,7 +41,7 @@ export async function validateRepository(
       name: repoData.name,
       fullName: repoData.full_name,
     };
-  } catch (error) {
+  } catch {
     // Repository validation error
     return { exists: false, isPublic: false };
   }

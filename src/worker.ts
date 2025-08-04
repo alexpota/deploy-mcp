@@ -1,9 +1,6 @@
 import { MCPHandler } from "./core/mcp-handler.js";
 import { VercelAdapter } from "./adapters/index.js";
-import {
-  generateBadgeData,
-  generateErrorBadge,
-} from "./server/badge.js";
+import { generateBadgeData, generateErrorBadge } from "./server/badge.js";
 import { Env } from "./types.js";
 import { landingPageHTML } from "./landing-page.js";
 import { handleWebhook } from "./server/webhook.js";
