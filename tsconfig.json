@@ -15,6 +15,6 @@
     "noEmit": true,
     "types": ["@cloudflare/workers-types", "@types/node"]
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "worker-configuration.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

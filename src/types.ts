@@ -1,3 +1,6 @@
+// Cloudflare Workers types
+/// <reference types="@cloudflare/workers-types" />
+
 export interface DeploymentStatus {
   id?: string;
   status: "success" | "failed" | "building" | "error" | "unknown";
@@ -25,9 +28,15 @@ export interface ToolArguments {
   token?: string;
 }
 
+// Use the generated Env interface from worker-configuration.d.ts
+// which includes BADGE_KV: KVNamespace
+// and add our additional tokens
 export interface Env {
+  BADGE_KV: KVNamespace;
   VERCEL_TOKEN?: string;
   NETLIFY_TOKEN?: string;
   RAILWAY_TOKEN?: string;
   RENDER_TOKEN?: string;
+  // Optional webhook secret for enhanced security (not required for public repos)
+  VERCEL_WEBHOOK_SECRET?: string;
 }
