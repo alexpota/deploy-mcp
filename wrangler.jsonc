@@ -1,0 +1,36 @@
+{
+  "name": "deploy-mcp",
+  "main": "dist/worker.js",
+  "compatibility_date": "2025-01-01",
+  
+  // KV namespace for badge storage
+  "kv_namespaces": [
+    {
+      "binding": "BADGE_KV",
+      "id": "e80323fd486641bd86d41a2ff4384f84",
+      "preview_id": "e80323fd486641bd86d41a2ff4384f84"
+    }
+  ],
+
+  "env": {
+    "production": {
+      "name": "deploy-mcp-production",
+      
+      // Custom domain routing
+      "routes": [
+        {
+          "pattern": "deploy-mcp.io",
+          "custom_domain": true
+        }
+      ],
+      
+      // Production KV namespace
+      "kv_namespaces": [
+        {
+          "binding": "BADGE_KV",
+          "id": "16d638200bff42a8accb3a153e5d1e6d"
+        }
+      ]
+    }
+  }
+}

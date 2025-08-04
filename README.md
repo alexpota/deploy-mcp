@@ -195,6 +195,75 @@ All AI tools (except Continue.dev) use the same configuration:
 
 💡 Replace `your-vercel-token` with your actual Vercel API token from [vercel.com/account/tokens](https://vercel.com/account/tokens)
 
+## Deployment Status Badges
+
+Get live deployment status badges for your repositories that update in real-time via webhooks.
+
+### Badge URLs
+
+Add these badges to your README to show live deployment status:
+
+```markdown
+![Vercel Deployment](https://deploy-mcp.io/badge/username/repository/vercel)
+```
+
+**Examples:**
+- `https://deploy-mcp.io/badge/john/my-app/vercel`
+- `https://deploy-mcp.io/badge/youruser/yourrepo/vercel`
+
+**⚠️ Requirements:**
+- **Public repositories only** - Private repos not supported for security reasons
+- **Vercel Pro/Enterprise plan** - Webhooks required for real-time badge updates
+
+**For free tier users:** The MCP server works perfectly for checking deployment status in your AI conversations. Badges are a premium feature requiring paid Vercel plans.
+
+### Setting Up Webhooks
+
+For badges to show real-time status, configure webhooks in your deployment platform:
+
+#### Vercel Setup
+
+**Note:** Vercel webhooks require a Pro or Enterprise plan.
+
+1. **Go to your Vercel team settings**
+2. **Navigate to "Webhooks" section**
+3. **Click "Create Webhook"**
+4. **Configure the webhook:**
+   - **URL**: `https://deploy-mcp.io/webhook/yourusername/yourrepo/vercel`
+   - **Events**: Select "Deployment Created", "Deployment Ready", and "Deployment Error"
+   - **Projects**: Choose your specific project or leave empty for all projects
+   - **Secret**: Leave empty (not required for public repositories)
+5. **Save the webhook**
+
+**Important:** Replace `yourusername` and `yourrepo` with your actual GitHub username and repository name.
+
+**Note:** Vercel's free tier doesn't support webhooks, so badges won't work. Use the MCP server instead for deployment status in your AI conversations.
+
+#### Supported Events
+
+The webhook will trigger on:
+- ✅ Deployment started (badge shows "building")
+- ✅ Deployment succeeded (badge shows "success")
+- ❌ Deployment failed (badge shows "failed")
+- ⚠️ Deployment errored (badge shows "error")
+
+#### Badge Status Colors
+
+- 🟢 **Success** - Green badge when deployment is live
+- 🔴 **Failed** - Red badge when deployment failed
+- 🟡 **Building** - Yellow badge during deployment
+- ⚫ **Unknown** - Grey badge when no status available
+- 🔴 **Error** - Red badge when deployment errored
+
+### Testing Your Setup
+
+1. **Add the badge** to your repository README
+2. **Configure the webhook** as described above
+3. **Make a commit** and push to trigger a deployment
+4. **Watch the badge** update in real-time during deployment
+
+**Initial badge status will show "unknown" until the first webhook is received.**
+
 
 ### Getting API Tokens
 
@@ -232,13 +301,12 @@ Render integration is on our roadmap. [Star the repo](https://github.com/alexpot
 
 ## Usage Examples
 
-### In Your AI Conversation
+### MCP Server Usage
 
-Once configured, simply ask your AI assistant:
+Once configured with your AI assistant, simply ask:
 
 ```
 You: Check my latest Vercel deployment
-
 
 Assistant: I'll check your latest Vercel deployment for you.
 
@@ -256,12 +324,29 @@ Assistant: I'll check your latest Vercel deployment for you.
 Everything looks good - your deployment is live and running successfully!
 ```
 
-### More Examples
-
+**More examples:**
 - `"Is my website deployment finished?"`
 - `"Show me the deployment status for project-xyz"`
 - `"Check if the production deployment succeeded"`
 - `"What's the status of my latest deploy?"`
+
+### Badge Usage
+
+Add live deployment status badges to your README:
+
+```markdown
+# My Project
+
+![Vercel](https://deploy-mcp.io/badge/yourusername/yourrepo/vercel)
+
+<!-- Other content -->
+```
+
+**Multiple platforms:**
+```markdown
+[![Vercel](https://deploy-mcp.io/badge/user/repo/vercel)](https://deploy-mcp.io)
+[![Netlify](https://deploy-mcp.io/badge/user/repo/netlify)](https://deploy-mcp.io)
+```
 
 
 ## MCP Tools Reference

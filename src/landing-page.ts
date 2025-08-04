@@ -589,7 +589,8 @@ export const landingPageHTML = `<!DOCTYPE html>
     }
 
     .platform.supported .platform-icon {
-      background: linear-gradient(135deg, var(--accent-green), #34d399);
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid var(--accent-green);
     }
 
     .platform.coming-soon {
@@ -890,28 +891,46 @@ export const landingPageHTML = `<!DOCTYPE html>
       
       <div class="badge-showcase">
         <div class="badge-preview">
-          <div class="badge-example">
-            <div class="badge-status success"></div>
-            <span>deploy: success</span>
-          </div>
-          <div class="badge-example">
-            <div class="badge-status building"></div>
-            <span>deploy: building</span>
-          </div>
-          <div class="badge-example">
-            <div class="badge-status error"></div>
-            <span>deploy: failed</span>
+          <h3 style="margin-bottom: 1rem; color: var(--text-primary); font-size: 1.1rem;">Live Examples:</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center;">
+              <img src="https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/microsoft/vscode/vercel" alt="Vercel Deploy Status" style="margin-right: 0.75rem;" />
+              <span style="color: var(--text-secondary); font-size: 0.9rem;">microsoft/vscode on Vercel</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <img src="https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/facebook/react/vercel" alt="Netlify Deploy Status" style="margin-right: 0.75rem;" />
+              <span style="color: var(--text-secondary); font-size: 0.9rem;">facebook/react on Netlify</span>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <img src="https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/angular/angular/vercel" alt="Railway Deploy Status" style="margin-right: 0.75rem;" />
+              <span style="color: var(--text-secondary); font-size: 0.9rem;">angular/angular on Railway</span>
+            </div>
           </div>
         </div>
         <div class="code-wrapper multiline">
           <div class="code-header">
-            <button class="copy-btn" onclick="copyToClipboard('[![Deploy Status](https://deploy-mcp.io/badge/vercel/your-project)](https://deploy-mcp.io)', event)">Copy</button>
+            <button class="copy-btn" onclick="copyToClipboard('[![Deploy Status](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/user/repo/vercel)](https://deploy-mcp.io)', event)">Copy</button>
           </div>
-          <div class="code-content">[![Deploy Status](https://deploy-mcp.io/badge/vercel/your-project)](https://deploy-mcp.io)</div>
+          <div class="code-content">[![Deploy Status](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/user/repo/vercel)](https://deploy-mcp.io)</div>
         </div>
       </div>
       <div style="text-align: center; margin-top: 1.5rem;">
-        <p style="color: var(--accent-orange); font-size: 1rem; font-weight: 600;">🚀 Coming Soon</p>
+        <p style="color: var(--accent-green); font-size: 1rem; font-weight: 600;">✅ Now Available</p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">
+          Supports Vercel • Netlify and Railway coming soon
+        </p>
+      </div>
+      
+      <div style="margin-top: 2rem; padding: 1.5rem; background: var(--bg-secondary); border-radius: 8px; border-left: 3px solid var(--accent-blue);">
+        <h4 style="margin: 0 0 1rem 0; color: var(--text-primary); font-size: 1rem;">Quick Setup:</h4>
+        <ol style="margin: 0; padding-left: 1.5rem; color: var(--text-secondary); line-height: 1.6;">
+          <li>Add badge to your README (replace user/repo in URL above)</li>
+          <li>Configure webhook in your deployment platform</li>
+          <li>Badge updates automatically on each deployment</li>
+        </ol>
+        <p style="margin: 1rem 0 0 0; color: var(--text-secondary); font-size: 0.9rem;">
+          📖 <strong>Detailed setup instructions:</strong> <a href="https://github.com/alexpota/deploy-mcp#deployment-status-badges" style="color: var(--accent-blue); text-decoration: none;">View README</a>
+        </p>
       </div>
     </div>
 
@@ -923,25 +942,33 @@ export const landingPageHTML = `<!DOCTYPE html>
       <div class="platforms">
         <div class="platform supported">
           <div class="platform-status"></div>
-          <div class="platform-icon">V</div>
+          <div class="platform-icon">
+            <img src="https://vercel.com/favicon.ico" alt="Vercel" style="width: 24px; height: 24px;">
+          </div>
           <h3>Vercel</h3>
           <p>Full deployment tracking with real-time status updates</p>
         </div>
         <div class="platform coming-soon">
           <div class="platform-status"></div>
-          <div class="platform-icon">N</div>
+          <div class="platform-icon">
+            <img src="https://www.netlify.com/favicon.ico" alt="Netlify" style="width: 24px; height: 24px;">
+          </div>
           <h3>Netlify</h3>
           <p>Coming in next release</p>
         </div>
         <div class="platform coming-soon">
           <div class="platform-status"></div>
-          <div class="platform-icon">R</div>
+          <div class="platform-icon">
+            <img src="https://railway.app/favicon.ico" alt="Railway" style="width: 24px; height: 24px;">
+          </div>
           <h3>Railway</h3>
           <p>On the roadmap</p>
         </div>
         <div class="platform coming-soon">
           <div class="platform-status"></div>
-          <div class="platform-icon">R</div>
+          <div class="platform-icon">
+            <img src="https://us1.discourse-cdn.com/flex016/uploads/render/original/2X/a/ad2cd49c57c27455f695b61f3f8a01571697b336.svg" alt="Render" style="width: 24px; height: 24px;">
+          </div>
           <h3>Render</h3>
           <p>On the roadmap</p>
         </div>

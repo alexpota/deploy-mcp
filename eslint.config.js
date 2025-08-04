@@ -22,6 +22,8 @@ export default [
         fetch: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
+        crypto: 'readonly',
+        KVNamespace: 'readonly',
       },
     },
     plugins: {
