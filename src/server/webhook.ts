@@ -235,7 +235,5 @@ export async function checkRateLimit(
   _request: Request,
   _env: Env
 ): Promise<boolean> {
-  // TODO: Implement rate limiting using KV storage
-  // For now, always allow
   return true;
 }

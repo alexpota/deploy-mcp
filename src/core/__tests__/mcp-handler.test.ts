@@ -52,21 +52,6 @@ describe("MCPHandler", () => {
       );
     });
 
-    it("should handle watch_deployment", async () => {
-      // Skip this test as it requires complex mocking of DeploymentIntelligence
-      // which is tested separately in deployment-intelligence.test.ts
-    });
-
-    it("should handle compare_deployments", async () => {
-      // Skip this test as it requires complex mocking of DeploymentIntelligence
-      // which is tested separately in deployment-intelligence.test.ts
-    });
-
-    it("should handle get_deployment_logs", async () => {
-      // Skip this test as it requires complex mocking of DeploymentIntelligence
-      // which is tested separately in deployment-intelligence.test.ts
-    });
-
     it("should throw error for unknown tool", async () => {
       await expect(handler.handleToolCall("unknown_tool", {})).rejects.toThrow(
         "Unknown tool: unknown_tool"
