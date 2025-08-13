@@ -3,6 +3,7 @@
  */
 export interface VercelDeployment {
   uid: string;
+  id?: string;
   name: string;
   url: string;
   state:
@@ -11,6 +12,14 @@ export interface VercelDeployment {
     | "INITIALIZING"
     | "QUEUED"
     | "READY"
+    | "CANCELED";
+  readyState?:
+    | "INITIALIZING"
+    | "BUILDING"
+    | "UPLOADING"
+    | "DEPLOYING"
+    | "READY"
+    | "ERROR"
     | "CANCELED";
   ready: number;
   createdAt: number;

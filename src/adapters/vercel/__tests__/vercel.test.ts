@@ -37,6 +37,9 @@ describe("VercelAdapter", () => {
 
       (fetch as any).mockResolvedValueOnce({
         ok: true,
+        status: 200,
+        statusText: "OK",
+        text: async () => JSON.stringify({ deployments: [mockDeployment] }),
         json: async () => ({ deployments: [mockDeployment] }),
       });
 
@@ -75,6 +78,7 @@ describe("VercelAdapter", () => {
         ok: false,
         status: 404,
         statusText: "Not Found",
+        text: async () => "Not Found",
       });
 
       await expect(
@@ -87,6 +91,9 @@ describe("VercelAdapter", () => {
     it("should return true for valid token", async () => {
       (fetch as any).mockResolvedValueOnce({
         ok: true,
+        status: 200,
+        statusText: "OK",
+        text: async () => JSON.stringify({ user: { uid: "test-user" } }),
         json: async () => ({ user: { uid: "test-user" } }),
       });
 
@@ -98,6 +105,8 @@ describe("VercelAdapter", () => {
       (fetch as any).mockResolvedValueOnce({
         ok: false,
         status: 401,
+        statusText: "Unauthorized",
+        text: async () => "Unauthorized",
       });
 
       const result = await adapter.authenticate("invalid-token");
@@ -120,6 +129,9 @@ describe("VercelAdapter", () => {
 
       (fetch as any).mockResolvedValueOnce({
         ok: true,
+        status: 200,
+        statusText: "OK",
+        text: async () => JSON.stringify({ deployments: [mockDeployment] }),
         json: async () => ({ deployments: [mockDeployment] }),
       });
 
@@ -144,6 +156,9 @@ describe("VercelAdapter", () => {
 
       (fetch as any).mockResolvedValueOnce({
         ok: true,
+        status: 200,
+        statusText: "OK",
+        text: async () => JSON.stringify({ deployments: [mockDeployment] }),
         json: async () => ({ deployments: [mockDeployment] }),
       });
 
@@ -168,6 +183,9 @@ describe("VercelAdapter", () => {
 
       (fetch as any).mockResolvedValueOnce({
         ok: true,
+        status: 200,
+        statusText: "OK",
+        text: async () => JSON.stringify({ deployments: [mockDeployment] }),
         json: async () => ({ deployments: [mockDeployment] }),
       });
 

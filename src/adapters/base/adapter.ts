@@ -10,6 +10,19 @@ export abstract class BaseAdapter {
 
   abstract authenticate(token: string): Promise<boolean>;
 
+  abstract getDeploymentById(deploymentId: string, token: string): Promise<any>;
+
+  abstract getRecentDeployments(
+    project: string,
+    token: string,
+    limit?: number
+  ): Promise<any[]>;
+
+  abstract getDeploymentLogs(
+    deploymentId: string,
+    token: string
+  ): Promise<string>;
+
   protected formatTimestamp(date: Date | string | number): string {
     return new Date(date).toISOString();
   }

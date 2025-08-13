@@ -42,20 +42,13 @@ async function validateWebhookSignature(
       return false;
     }
 
-    // Get the webhook secret from environment (optional for public repos)
     const secret = env.VERCEL_WEBHOOK_SECRET;
     if (!secret) {
-      console.log(
-        "VERCEL_WEBHOOK_SECRET not configured, skipping signature validation"
-      );
-      return true; // Allow webhooks without signature validation for public repos
+      return true;
     }
 
     try {
-      // Get the raw request body for signature verification
       const body = await request.clone().text();
-
-      // Create HMAC SHA-256 hash
       const encoder = new TextEncoder();
       const keyData = encoder.encode(secret);
       const bodyData = encoder.encode(body);
@@ -151,9 +144,6 @@ export async function handleWebhook(
   platform: string,
   env: Env
 ): Promise<WebhookResponse> {
-  console.log(`Processing webhook: ${user}/${repo}/${platform}`);
-
-  // Validate input parameters
   if (!validateParams(user, repo, platform)) {
     return {
       success: false,
@@ -162,7 +152,6 @@ export async function handleWebhook(
     };
   }
 
-  // Validate repository exists and is public (required for badge updates)
   const repoValidation = await validateRepository(user, repo);
   if (!repoValidation.exists) {
     return {
@@ -198,10 +187,7 @@ export async function handleWebhook(
   let payload: any;
   try {
     payload = await request.json();
-    console.log(
-      `${platform} webhook payload:`,
-      JSON.stringify(payload, null, 2)
-    );
+    // Process webhook payload
   } catch {
     return {
       success: false,
@@ -212,14 +198,12 @@ export async function handleWebhook(
 
   // Map deployment status
   const deploymentStatus = mapDeploymentStatus(platform, payload);
-  console.log(`Mapped deployment status: ${deploymentStatus}`);
+  // Deployment status mapped successfully
 
   // Update KV storage
   try {
     await updateDeploymentStatus(user, repo, platform, deploymentStatus, env);
-    console.log(
-      `Updated KV storage: ${user}/${repo}/${platform} = ${deploymentStatus}`
-    );
+    // KV storage updated successfully
 
     return {
       success: true,
@@ -242,7 +226,5 @@ export async function checkRateLimit(
   _request: Request,
   _env: Env
 ): Promise<boolean> {
-  // TODO: Implement rate limiting using KV storage
-  // For now, always allow
   return true;
 }
