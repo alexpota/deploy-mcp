@@ -251,11 +251,15 @@ ${messages.join("\n\n")}
     const summary = {
       errorCount: (result.logs.match(/error/gi) || []).length,
       warningCount: (result.logs.match(/warning/gi) || []).length,
-      deploymentUrl: result.deploymentUrl || null,
+      deploymentUrl: null,
       hasErrors: result.analysis?.type !== "UNKNOWN",
     };
 
-    return ResponseFormatter.formatLogs(result.logs, result.analysis, summary);
+    return ResponseFormatter.formatLogs(
+      result.logs,
+      result.analysis || { type: "UNKNOWN", message: "No errors detected" },
+      summary
+    );
   }
 
   private schemaToJsonSchema(zodSchema: any): any {

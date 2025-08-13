@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { DeploymentIntelligence } from "../deployment-intelligence.js";
 import { VercelAdapter } from "../../adapters/vercel/index.js";
+import { DEFAULT_COMPARISON_COUNT } from "../constants.js";
 
 vi.mock("../../adapters/vercel/index.js");
 
@@ -129,6 +130,7 @@ describe("DeploymentIntelligence", () => {
       const comparison = await intelligence.compareDeployments({
         platform: "vercel",
         project: "test-project",
+        count: DEFAULT_COMPARISON_COUNT,
         token: "test-token",
       });
 
@@ -148,6 +150,7 @@ describe("DeploymentIntelligence", () => {
       const comparison = await intelligence.compareDeployments({
         platform: "vercel",
         project: "test-project",
+        count: DEFAULT_COMPARISON_COUNT,
         token: "test-token",
       });
 
@@ -165,10 +168,13 @@ TypeScript compilation error`;
       const result = await intelligence.getDeploymentLogs({
         platform: "vercel",
         deploymentId: "dep123",
+        filter: "error",
         token: "test-token",
       });
 
-      expect(result.logs).toBe(logs);
+      // When filter is "error", only lines with "error" are returned
+      expect(result.logs).toContain("Error: Build failed");
+      expect(result.logs).toContain("error");
       expect(result.analysis).toBeDefined();
       // Simplified - just check basic error detection
       expect(result.analysis?.type).toBe("BUILD");

@@ -162,14 +162,14 @@ ${
   }
 
   static formatWatchEvent(event: any): string {
-    const icons = {
+    const icons: Record<string, string> = {
       progress: "🔄",
       success: "✅",
       error: "❌",
       warning: "⚠️",
     };
 
-    let formatted = `${icons[event.type] || ""} **${event.message}**`;
+    let formatted = `${icons[event.type as string] || ""} **${event.message}**`;
 
     if (event.details) {
       if (event.details.url) {

@@ -369,7 +369,6 @@ export class DeploymentIntelligence {
           timestamp: new Date().toISOString(),
           details: {
             suggestion: "Check the platform dashboard for the latest status",
-            deploymentId: deploymentId,
           },
         };
       }
@@ -531,23 +530,9 @@ export class DeploymentIntelligence {
 
       const analysis = this.analyzeLogs(filteredLogs);
 
-      // Extract deployment URL if available
-      const urlMatch = logs.match(/https?:\/\/[^\s]+\.vercel\.app/);
-      const deploymentUrl = urlMatch ? urlMatch[0] : undefined;
-
-      // Count errors and warnings
-      const errorCount = (logs.match(/error/gi) || []).length;
-      const warningCount = (logs.match(/warning/gi) || []).length;
-
       return {
         logs: filteredLogs || ERROR_MESSAGES.NO_LOGS_MATCHING_FILTER,
         analysis,
-        summary: {
-          errorCount,
-          warningCount,
-          hasErrors: errorCount > 0,
-          deploymentUrl,
-        },
       };
     } catch (error) {
       throw new Error(
@@ -681,6 +666,24 @@ export class DeploymentIntelligence {
           : 0;
 
       return {
+        deployments: {
+          current: {
+            id: current.uid || current.id || "",
+            url: current.url,
+            timestamp: current.createdAt || new Date().toISOString(),
+            status: current.state || "unknown",
+            buildTime: currentBuildTime,
+            timeAgo: this.getTimeAgo(new Date(current.createdAt).getTime()),
+          },
+          previous: {
+            id: previous.uid || previous.id || "",
+            url: previous.url,
+            timestamp: previous.createdAt || new Date().toISOString(),
+            status: previous.state || "unknown",
+            buildTime: previousBuildTime,
+            timeAgo: this.getTimeAgo(new Date(previous.createdAt).getTime()),
+          },
+        },
         performance: {
           buildTime: {
             current: currentBuildTime,
