@@ -4,16 +4,68 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version type to bump (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
+  bump-version:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test -- --run
+      
+      - name: Bump version
+        id: version
+        run: |
+          npm version ${{ github.event.inputs.version }} -m "chore: release %s"
+          echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+      
+      - name: Push changes
+        run: |
+          git push origin main
+          git push origin --tags
+
   publish:
+    needs: [bump-version]
+    if: always() && (github.event_name == 'push' || needs.bump-version.result == 'success')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', needs.bump-version.outputs.version) || github.ref }}
     
     - uses: actions/setup-node@v4
       with:
@@ -29,3 +81,13 @@ jobs:
     - run: npm publish --provenance --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    
+    - name: Create GitHub Release
+      if: success()
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ github.event_name == 'workflow_dispatch' && format('v{0}', needs.bump-version.outputs.version) || github.ref_name }}
+        name: Release ${{ github.event_name == 'workflow_dispatch' && needs.bump-version.outputs.version || github.ref_name }}
+        generate_release_notes: true
+        draft: false
+        prerelease: false

@@ -46,7 +46,10 @@
     "clean": "rm -rf dist",
     "deploy": "npm run build && npx wrangler deploy --env=production",
     "prepare": "husky",
-    "prepublishOnly": "npm run clean && npm run build && npm run type-check && npm run lint && npm test"
+    "prepublishOnly": "npm run clean && npm run build && npm run type-check && npm run lint && npm test",
+    "release": "npm version patch && git push origin main --tags",
+    "release:minor": "npm version minor && git push origin main --tags",
+    "release:major": "npm version major && git push origin main --tags"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.11.2",

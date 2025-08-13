@@ -17,28 +17,29 @@ No more context-switching. No more dashboard hunting.
 
 ## Demo
 
+### Your conversation:
 ```
-// In your AI conversation:
-"Check my latest Vercel deployment"
-
-// Claude's Response:
-## Deployment Status
-
-### Current Status
-**Project:** my-app  
-**Platform:** Vercel  
-**Status:** ✅ Success  
-**URL:** https://my-app.vercel.app  
-**Duration:** 45s  
-**Deployed:** 2 hours ago  
-
-### Commit Info
-**SHA:** `abc123ef`  
-**Message:** Update homepage hero section  
-**Author:** John Doe  
-
-Everything looks good - your deployment is live and running successfully!
+User: "Check my latest Vercel deployment"
 ```
+
+### AI Assistant's Response:
+
+> ## Deployment Status
+> 
+> ### Current Status
+> **Project:** my-app  
+> **Platform:** Vercel  
+> **Status:** ✅ Success  
+> **URL:** https://my-app.vercel.app  
+> **Duration:** 45s  
+> **Deployed:** 2 hours ago  
+> 
+> ### Commit Info
+> **SHA:** `abc123ef`  
+> **Message:** Update homepage hero section  
+> **Author:** John Doe  
+> 
+> Everything looks good - your deployment is live and running successfully!
 
 **Just ask your AI**: *"What's the status of my latest deployment?"*  
 Get instant answers without leaving your conversation.
@@ -308,81 +309,85 @@ Render integration is on our roadmap. [Star the repo](https://github.com/alexpot
 ### Quick Examples by Tool
 
 #### 1. Check Deployment Status
-```
-You: "Check my Vercel deployment"
-You: "Is my website live?"
-You: "Show deployment status for my-app"
-```
 
-#### 2. Watch Deployment (Real-time) **[NEW]**
-```
-You: "Watch my deployment"
-You: "Stream my build progress"
-You: "Show me real-time deployment updates"
-```
+> 💬 **Ask your AI:**
+> - "Check my Vercel deployment"
+> - "Is my website live?"
+> - "Show deployment status for my-app"
+
+#### 2. Watch Deployment (Real-time)
+
+> 💬 **Ask your AI:**
+> - "Watch my deployment"
+> - "Stream my build progress"
+> - "Show me real-time deployment updates"
+
 Get live updates as your deployment progresses through initialization, building, and completion.
 
-#### 3. Compare Deployments **[NEW]**
-```
-You: "Compare my last 2 deployments"
-You: "What changed in my latest deployment?"
-You: "Show build time differences"
-```
+#### 3. Compare Deployments
+
+> 💬 **Ask your AI:**
+> - "Compare my last 2 deployments"
+> - "What changed in my latest deployment?"
+> - "Show build time differences"
+
 See performance metrics, risk assessment, and identify what changed between deployments.
 
-#### 4. Get Deployment Logs **[NEW]**
-```
-You: "Show deployment logs"
-You: "Why did my deployment fail?"
-You: "Get error logs for deployment dpl_ABC123"
-```
+#### 4. Get Deployment Logs
+
+> 💬 **Ask your AI:**
+> - "Show deployment logs"
+> - "Why did my deployment fail?"
+> - "Get error logs for deployment dpl_ABC123"
+
 Get intelligent error analysis with suggested fixes and filtered log output.
 
 ### MCP Server Usage
 
 Once configured with your AI assistant, simply ask:
 
-```
-You: Check my latest Vercel deployment
+#### Example: Check Status
 
-Assistant: I'll check your latest Vercel deployment for you.
+**You:** "Check my latest Vercel deployment"
 
-## Deployment Status
+**Assistant:**
+> I'll check your latest Vercel deployment for you.
+>
+> ## Deployment Status
+> 
+> ### Current Status
+> **Project:** my-app  
+> **Platform:** Vercel  
+> **Status:** ✅ Success  
+> **URL:** https://my-app.vercel.app  
+> **Duration:** 45s  
+> **Deployed:** 2 hours ago  
+> 
+> ### Commit Info
+> **SHA:** `abc123ef`  
+> **Message:** Update homepage hero section  
+> **Author:** John Doe  
+> 
+> Everything looks good - your deployment is live and running successfully!
 
-### Current Status
-**Project:** my-app  
-**Platform:** Vercel  
-**Status:** ✅ Success  
-**URL:** https://my-app.vercel.app  
-**Duration:** 45s  
-**Deployed:** 2 hours ago  
+#### Example: Real-time Monitoring
 
-### Commit Info
-**SHA:** `abc123ef`  
-**Message:** Update homepage hero section  
-**Author:** John Doe  
+**You:** "Watch my deployment"
 
-Everything looks good - your deployment is live and running successfully!
-```
-
-**New Real-time Example:**
-```
-You: Watch my deployment
-
-Assistant: ## Deployment Watch
-
-### Real-time Updates
-🔄 **Starting to watch deployment for my-app**
-
-🔄 **Deployment state: INITIALIZING**
-
-🔄 **Deployment state: BUILDING**
-   Duration: 15s
-
-✅ **Deployment successful!**
-   URL: https://my-app.vercel.app
-   Duration: 45s
-```
+**Assistant:**
+> ## Deployment Watch
+> 
+> ### Real-time Updates
+> 🔄 **Starting to watch deployment for my-app**
+> 
+> 🔄 **Deployment state: INITIALIZING**
+> 
+> 🔄 **Deployment state: BUILDING**  
+>    Duration: 15s
+> 
+> ✅ **Deployment successful!**  
+>    URL: https://my-app.vercel.app  
+>    Duration: 45s
 
 **More examples:**
 - `"Is my website deployment finished?"`
