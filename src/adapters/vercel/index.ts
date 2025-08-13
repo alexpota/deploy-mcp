@@ -1,19 +1,26 @@
 import { BaseAdapter } from "../base/index.js";
 import { DeploymentStatus } from "../../types.js";
 import { VercelAPI } from "./api.js";
+import {
+  API_CONFIG,
+  PLATFORM_NAMES,
+  ENVIRONMENT_TYPES,
+  VERCEL_STATES,
+  ADAPTER_ERRORS,
+} from "../../core/constants.js";
 import type { VercelDeployment, VercelConfig } from "./types.js";
 
 export class VercelAdapter extends BaseAdapter {
-  name = "vercel";
+  name = PLATFORM_NAMES.VERCEL;
   private api: VercelAPI;
 
   constructor(config?: Partial<VercelConfig>) {
     super();
 
     const defaultConfig: VercelConfig = {
-      baseUrl: "https://api.vercel.com",
-      timeout: 10000,
-      retryAttempts: 3,
+      baseUrl: API_CONFIG.VERCEL_BASE_URL,
+      timeout: API_CONFIG.DEFAULT_TIMEOUT_MS,
+      retryAttempts: API_CONFIG.DEFAULT_RETRY_ATTEMPTS,
     };
 
     this.api = new VercelAPI({ ...defaultConfig, ...config });
@@ -25,19 +32,21 @@ export class VercelAdapter extends BaseAdapter {
   ): Promise<DeploymentStatus> {
     const apiToken = token || process.env.VERCEL_TOKEN;
     if (!apiToken) {
-      throw new Error(
-        "Vercel token required. Set VERCEL_TOKEN environment variable or pass token parameter."
-      );
+      throw new Error(ADAPTER_ERRORS.TOKEN_REQUIRED);
     }
 
     try {
-      const data = await this.api.getDeployments(project, apiToken, 1);
+      const data = await this.api.getDeployments(
+        project,
+        apiToken,
+        API_CONFIG.SINGLE_DEPLOYMENT_LIMIT
+      );
 
       if (!data.deployments || data.deployments.length === 0) {
         return {
-          status: "unknown",
+          status: ADAPTER_ERRORS.UNKNOWN_STATUS as "unknown",
           projectName: project,
-          platform: "vercel",
+          platform: PLATFORM_NAMES.VERCEL,
         };
       }
 
@@ -46,7 +55,7 @@ export class VercelAdapter extends BaseAdapter {
       if (error instanceof Error) {
         throw error;
       }
-      throw new Error("Failed to fetch deployment status from Vercel");
+      throw new Error(ADAPTER_ERRORS.FETCH_DEPLOYMENT_FAILED);
     }
   }
 
@@ -59,9 +68,6 @@ export class VercelAdapter extends BaseAdapter {
     }
   }
 
-  /**
-   * Transform Vercel deployment to standard format
-   */
   private transformDeployment(deployment: VercelDeployment): DeploymentStatus {
     const status = this.mapState(deployment.state);
 
@@ -70,12 +76,12 @@ export class VercelAdapter extends BaseAdapter {
       status,
       url: deployment.url ? `https://${deployment.url}` : undefined,
       projectName: deployment.name,
-      platform: "vercel",
+      platform: PLATFORM_NAMES.VERCEL,
       timestamp: this.formatTimestamp(deployment.createdAt),
       duration: deployment.ready
         ? this.calculateDuration(deployment.createdAt, deployment.ready)
         : undefined,
-      environment: deployment.target || "production",
+      environment: deployment.target || ENVIRONMENT_TYPES.PRODUCTION,
       commit: deployment.meta
         ? {
             sha: deployment.meta.githubCommitSha,
@@ -86,27 +92,53 @@ export class VercelAdapter extends BaseAdapter {
     };
   }
 
-  /**
-   * Map Vercel states to standard deployment status
-   */
   private mapState(
     state: VercelDeployment["state"]
   ): DeploymentStatus["status"] {
     switch (state) {
-      case "READY":
+      case VERCEL_STATES.READY:
         return "success";
-      case "ERROR":
-      case "CANCELED":
+      case VERCEL_STATES.ERROR:
+      case VERCEL_STATES.CANCELED:
         return "failed";
-      case "BUILDING":
-      case "INITIALIZING":
-      case "QUEUED":
+      case VERCEL_STATES.BUILDING:
+      case VERCEL_STATES.INITIALIZING:
+      case VERCEL_STATES.QUEUED:
         return "building";
       default:
-        return "unknown";
+        return ADAPTER_ERRORS.UNKNOWN_STATUS as "unknown";
     }
+  }
+
+  async getDeploymentById(
+    deploymentId: string,
+    token: string
+  ): Promise<VercelDeployment> {
+    return this.api.getDeploymentById(deploymentId, token);
+  }
+
+  async getRecentDeployments(
+    project: string,
+    token: string,
+    limit: number = API_CONFIG.DEFAULT_DEPLOYMENT_LIMIT
+  ): Promise<VercelDeployment[]> {
+    const data = await this.api.getDeployments(project, token, limit);
+    return data.deployments || [];
+  }
+
+  async getDeploymentLogs(
+    deploymentId: string,
+    token: string
+  ): Promise<string> {
+    return this.api.getDeploymentLogs(deploymentId, token);
+  }
+
+  async getDeploymentStatus(
+    project: string,
+    token: string
+  ): Promise<DeploymentStatus> {
+    return this.getLatestDeployment(project, token);
   }
 }
 
-// Re-export types for convenience
 export type { VercelDeployment, VercelConfig } from "./types.js";

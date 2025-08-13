@@ -45,9 +45,7 @@ async function validateWebhookSignature(
     // Get the webhook secret from environment (optional for public repos)
     const secret = env.VERCEL_WEBHOOK_SECRET;
     if (!secret) {
-      console.log(
-        "VERCEL_WEBHOOK_SECRET not configured, skipping signature validation"
-      );
+      // Webhook validation is optional for public repos
       return true; // Allow webhooks without signature validation for public repos
     }
 
@@ -151,7 +149,7 @@ export async function handleWebhook(
   platform: string,
   env: Env
 ): Promise<WebhookResponse> {
-  console.log(`Processing webhook: ${user}/${repo}/${platform}`);
+  // Processing webhook for tracking
 
   // Validate input parameters
   if (!validateParams(user, repo, platform)) {
@@ -198,10 +196,7 @@ export async function handleWebhook(
   let payload: any;
   try {
     payload = await request.json();
-    console.log(
-      `${platform} webhook payload:`,
-      JSON.stringify(payload, null, 2)
-    );
+    // Process webhook payload
   } catch {
     return {
       success: false,
@@ -212,14 +207,12 @@ export async function handleWebhook(
 
   // Map deployment status
   const deploymentStatus = mapDeploymentStatus(platform, payload);
-  console.log(`Mapped deployment status: ${deploymentStatus}`);
+  // Deployment status mapped successfully
 
   // Update KV storage
   try {
     await updateDeploymentStatus(user, repo, platform, deploymentStatus, env);
-    console.log(
-      `Updated KV storage: ${user}/${repo}/${platform} = ${deploymentStatus}`
-    );
+    // KV storage updated successfully
 
     return {
       success: true,

@@ -22,16 +22,20 @@ No more context-switching. No more dashboard hunting.
 "Check my latest Vercel deployment"
 
 // Claude's Response:
-✅ **Status**: Success  
-🌐 **Live URL**: https://my-app.vercel.app  
-⏱️ **Deployment Time**: 45 seconds  
-📅 **Last Deployed**: January 15, 2025 at 10:30 UTC  
-🌍 **Environment**: Production  
+## Deployment Status
 
-**Latest Commit**:
-- SHA: `abc123ef`
-- Message: "Update homepage hero section"
-- Author: John Doe
+### Current Status
+**Project:** my-app  
+**Platform:** Vercel  
+**Status:** ✅ Success  
+**URL:** https://my-app.vercel.app  
+**Duration:** 45s  
+**Deployed:** 2 hours ago  
+
+### Commit Info
+**SHA:** `abc123ef`  
+**Message:** Update homepage hero section  
+**Author:** John Doe  
 
 Everything looks good - your deployment is live and running successfully!
 ```
@@ -301,6 +305,39 @@ Render integration is on our roadmap. [Star the repo](https://github.com/alexpot
 
 ## Usage Examples
 
+### Quick Examples by Tool
+
+#### 1. Check Deployment Status
+```
+You: "Check my Vercel deployment"
+You: "Is my website live?"
+You: "Show deployment status for my-app"
+```
+
+#### 2. Watch Deployment (Real-time) **[NEW]**
+```
+You: "Watch my deployment"
+You: "Stream my build progress"
+You: "Show me real-time deployment updates"
+```
+Get live updates as your deployment progresses through initialization, building, and completion.
+
+#### 3. Compare Deployments **[NEW]**
+```
+You: "Compare my last 2 deployments"
+You: "What changed in my latest deployment?"
+You: "Show build time differences"
+```
+See performance metrics, risk assessment, and identify what changed between deployments.
+
+#### 4. Get Deployment Logs **[NEW]**
+```
+You: "Show deployment logs"
+You: "Why did my deployment fail?"
+You: "Get error logs for deployment dpl_ABC123"
+```
+Get intelligent error analysis with suggested fixes and filtered log output.
+
 ### MCP Server Usage
 
 Once configured with your AI assistant, simply ask:
@@ -310,18 +347,41 @@ You: Check my latest Vercel deployment
 
 Assistant: I'll check your latest Vercel deployment for you.
 
-✅ **Status**: Success
-🌐 **Live URL**: https://my-app.vercel.app
-⏱️ **Deployment Time**: 45 seconds
-📅 **Last Deployed**: January 15, 2025 at 10:30 UTC
-🌍 **Environment**: Production
+## Deployment Status
 
-**Latest Commit**:
-- SHA: `abc123ef`
-- Message: "Update homepage hero section"
-- Author: John Doe
+### Current Status
+**Project:** my-app  
+**Platform:** Vercel  
+**Status:** ✅ Success  
+**URL:** https://my-app.vercel.app  
+**Duration:** 45s  
+**Deployed:** 2 hours ago  
+
+### Commit Info
+**SHA:** `abc123ef`  
+**Message:** Update homepage hero section  
+**Author:** John Doe  
 
 Everything looks good - your deployment is live and running successfully!
+```
+
+**New Real-time Example:**
+```
+You: Watch my deployment
+
+Assistant: ## Deployment Watch
+
+### Real-time Updates
+🔄 **Starting to watch deployment for my-app**
+
+🔄 **Deployment state: INITIALIZING**
+
+🔄 **Deployment state: BUILDING**
+   Duration: 15s
+
+✅ **Deployment successful!**
+   URL: https://my-app.vercel.app
+   Duration: 45s
 ```
 
 **More examples:**
@@ -329,6 +389,10 @@ Everything looks good - your deployment is live and running successfully!
 - `"Show me the deployment status for project-xyz"`
 - `"Check if the production deployment succeeded"`
 - `"What's the status of my latest deploy?"`
+- `"Watch my deployment in real-time"` **[NEW]**
+- `"Compare my last 2 deployments"` **[NEW]**
+- `"Show me the deployment logs for the failed build"` **[NEW]**
+- `"What changed between my current and previous deployment?"` **[NEW]**
 
 ### Badge Usage
 
@@ -350,6 +414,10 @@ Add live deployment status badges to your README:
 
 
 ## MCP Tools Reference
+
+The MCP server provides four powerful tools for comprehensive deployment tracking:
+
+### 1. check_deployment_status
 Retrieve the latest deployment status for a project.
 
 <details>
@@ -363,24 +431,71 @@ Retrieve the latest deployment status for a project.
 
 </details>
 
-<details>
-<summary><strong>Response Format</strong></summary>
+### 2. watch_deployment **[NEW]**
+Stream real-time deployment progress with live updates.
 
-```typescript
-{
-  status: "success" | "failed" | "building" | "error",
-  url: string,
-  projectName: string,
-  platform: string,
-  timestamp: string,
-  duration: number,
-  environment: "production" | "preview" | "development",
-  commit: {
-    sha: string,
-    message: string,
-    author: string
-  }
-}
+<details>
+<summary><strong>Parameters</strong></summary>
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `platform` | string | ✓ | Deployment platform (`vercel`, `netlify`, etc.) |
+| `project` | string | ✓ | Project name or ID |
+| `deploymentId` | string | ✗ | Specific deployment ID (latest if not specified) |
+| `token` | string | ✗ | API token (uses env variable if not provided) |
+
+</details>
+
+### 3. compare_deployments **[NEW]**
+Compare current deployment with previous versions to identify changes and performance differences.
+
+<details>
+<summary><strong>Parameters</strong></summary>
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `platform` | string | ✓ | Deployment platform (`vercel`, `netlify`, etc.) |
+| `project` | string | ✓ | Project name or ID |
+| `count` | number | ✗ | Number of deployments to compare (default: 2) |
+| `token` | string | ✗ | API token (uses env variable if not provided) |
+
+</details>
+
+### 4. get_deployment_logs **[NEW]**
+Fetch and analyze deployment logs with intelligent error detection.
+
+<details>
+<summary><strong>Parameters</strong></summary>
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `platform` | string | ✓ | Deployment platform (`vercel`, `netlify`, etc.) |
+| `deploymentId` | string | ✓ | Deployment ID to fetch logs for |
+| `filter` | string | ✗ | Filter logs: `error`, `warning`, or `all` (default: `error`) |
+| `token` | string | ✗ | API token (uses env variable if not provided) |
+
+</details>
+
+<details>
+<summary><strong>Response Formats</strong></summary>
+
+All tools return clean, Markdown-formatted responses for consistent display across AI tools:
+
+```markdown
+## Deployment Status
+
+### Current Status
+**Project:** my-app  
+**Platform:** Vercel  
+**Status:** ✅ Success  
+**URL:** https://my-app.vercel.app  
+**Duration:** 45s  
+**Deployed:** 2 hours ago  
+
+### Commit Info
+**SHA:** `abc1234`  
+**Message:** Fix navigation bug  
+**Author:** John Doe  
 ```
 
 </details>
@@ -436,30 +551,34 @@ npm run dev:worker
 ```
 deploy-mcp/
 ├── src/
-│   ├── index.ts              # MCP server entry point
-│   ├── worker.ts             # Cloudflare Worker for website
-│   ├── adapters/             # Platform adapters (new structure)
-│   │   ├── base/             # Base adapter framework
-│   │   │   ├── adapter.ts    # Abstract base class
-│   │   │   ├── types.ts      # Common interfaces
-│   │   │   └── index.ts      # Base exports
-│   │   ├── vercel/           # Vercel platform support
-│   │   │   ├── index.ts      # Main adapter class
-│   │   │   ├── types.ts      # Vercel-specific types
-│   │   │   ├── api.ts        # API client
-│   │   │   └── __tests__/    # Vercel tests
-│   │   └── index.ts          # All adapter exports
+│   ├── index.ts                      # MCP server entry point
+│   ├── worker.ts                     # Cloudflare Worker for website
+│   ├── adapters/                     # Platform adapters
+│   │   ├── base/                     # Base adapter framework
+│   │   │   ├── adapter.ts            # Abstract base class
+│   │   │   ├── api-client.ts         # HTTP client with rate limiting
+│   │   │   └── index.ts              # Base exports
+│   │   ├── vercel/                   # Vercel platform support
+│   │   │   ├── index.ts              # Main adapter class
+│   │   │   ├── api.ts                # Vercel API client
+│   │   │   ├── endpoints.ts          # API endpoint configs
+│   │   │   └── __tests__/            # Vercel tests
+│   │   └── index.ts                  # All adapter exports
 │   ├── core/
-│   │   ├── mcp-handler.ts    # MCP protocol implementation
-│   │   └── tools.ts          # MCP tool definitions
+│   │   ├── mcp-handler.ts            # MCP protocol implementation
+│   │   ├── tools.ts                  # MCP tool definitions (4 tools)
+│   │   ├── deployment-intelligence.ts # Real-time streaming
+│   │   ├── response-formatter.ts     # Markdown formatting
+│   │   └── constants.ts              # Configuration constants
 │   ├── server/
-│   │   └── badge.ts          # SVG badge generation (v0.2.0)
-│   └── types.ts              # TypeScript definitions
-├── tests/                    # Integration tests
-├── dist/                     # Compiled output
-├── wrangler.toml            # Cloudflare config
-├── tsconfig.json            # TypeScript config
-└── package.json             # Project metadata
+│   │   ├── badge.ts                  # SVG badge generation
+│   │   └── webhook.ts                # Webhook handler
+│   └── types.ts                      # TypeScript definitions
+├── tests/                             # Integration tests
+├── dist/                              # Compiled output
+├── wrangler.toml                      # Cloudflare config
+├── tsconfig.json                      # TypeScript config
+└── package.json                       # Project metadata
 ```
 
 ## Security
@@ -479,46 +598,120 @@ deploy-mcp/
 3. **Environment Variables** - Store tokens in environment variables, not in code
 4. **Git Ignore** - Never commit configuration files with tokens
 
-## Platform Support
+## Platform Support & Capabilities
 
+### Platform Status
 <table>
   <thead>
     <tr>
       <th>Platform</th>
       <th>Status</th>
-      <th>Features</th>
-      <th>Documentation</th>
+      <th>Check Status</th>
+      <th>Watch Live</th>
+      <th>Compare</th>
+      <th>Get Logs</th>
+      <th>Badges</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><strong>Vercel</strong></td>
-      <td><strong>✓ Supported</strong></td>
-      <td>Full deployment tracking with real-time status updates</td>
-      <td><a href="https://deploy-mcp.io/docs/vercel">View Guide</a></td>
+      <td>✅ <strong>Available</strong></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
     </tr>
     <tr>
       <td><strong>Netlify</strong></td>
-      <td><strong>Coming Soon</strong></td>
-      <td>In active development</td>
-      <td>Coming soon</td>
+      <td>🚧 <strong>In Development</strong></td>
+      <td>🚧</td>
+      <td>🚧</td>
+      <td>🚧</td>
+      <td>🚧</td>
+      <td>🚧</td>
     </tr>
     <tr>
       <td><strong>Railway</strong></td>
-      <td><strong>Planned</strong></td>
-      <td>On the roadmap</td>
-      <td>-</td>
+      <td>📅 <strong>Planned</strong></td>
+      <td>📅</td>
+      <td>📅</td>
+      <td>📅</td>
+      <td>📅</td>
+      <td>📅</td>
     </tr>
     <tr>
       <td><strong>Render</strong></td>
-      <td><strong>Planned</strong></td>
-      <td>On the roadmap</td>
-      <td>-</td>
+      <td>📅 <strong>Planned</strong></td>
+      <td>📅</td>
+      <td>📅</td>
+      <td>📅</td>
+      <td>📅</td>
+      <td>📅</td>
     </tr>
   </tbody>
 </table>
 
+**Legend:** ✅ Available | 🚧 In Development | 📅 Planned
+
 Want support for another platform? [Open an issue](https://github.com/alexpota/deploy-mcp/issues/new) or submit a PR\!
+
+## Troubleshooting
+
+### Common Issues & Solutions
+
+<details>
+<summary><strong>Tool not showing up in Claude</strong></summary>
+
+1. **Restart Claude Desktop** after updating configuration
+2. **Check configuration file syntax** - Ensure valid JSON
+3. **Verify file path** - Check correct config location for your OS
+4. **Check logs** - Look for MCP errors in Claude's developer console
+
+</details>
+
+<details>
+<summary><strong>Authentication errors</strong></summary>
+
+1. **Invalid token** - Verify your API token is correct and active
+2. **Token permissions** - Ensure token has read access to deployments
+3. **Environment variable** - Check `VERCEL_TOKEN` is set correctly
+4. **Token format** - Don't include quotes around token in env variable
+
+</details>
+
+<details>
+<summary><strong>Rate limiting</strong></summary>
+
+The MCP server automatically handles rate limiting:
+- **Per-token limits** - 30 requests per minute per token
+- **Automatic retry** - With exponential backoff
+- **Smart polling** - Dynamic intervals based on deployment state
+
+If you still hit limits, consider using a different token for heavy usage.
+
+</details>
+
+<details>
+<summary><strong>Deployment not found</strong></summary>
+
+1. **Project name** - Verify exact project name (case-sensitive)
+2. **Team scope** - For team projects, may need team-scoped token
+3. **Deployment exists** - Check if deployment is visible in dashboard
+4. **Platform** - Ensure you're using correct platform parameter
+
+</details>
+
+<details>
+<summary><strong>Real-time features not working</strong></summary>
+
+The new streaming features (watch, compare, logs) require:
+1. **Latest version** - Update to latest `deploy-mcp` version
+2. **API access** - Some features need Pro/Enterprise Vercel plan
+3. **Active deployment** - Watch only works during active deployments
+
+</details>
 
 ## Contributing
 
