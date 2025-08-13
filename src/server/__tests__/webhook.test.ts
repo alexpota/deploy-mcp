@@ -373,6 +373,10 @@ describe("handleWebhook", () => {
     });
 
     it("should handle KV storage errors", async () => {
+      // Mock console.error to suppress output in tests
+      const consoleErrorSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
       (updateDeploymentStatus as any).mockRejectedValue(new Error("KV error"));
 
       mockRequest = new Request("http://localhost", {
@@ -395,6 +399,9 @@ describe("handleWebhook", () => {
       expect(result.success).toBe(false);
       expect(result.message).toBe("Failed to update deployment status");
       expect(result.error).toBe("KV error");
+
+      // Restore console.error
+      consoleErrorSpy.mockRestore();
     });
   });
 

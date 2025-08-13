@@ -8,7 +8,6 @@ import { handleWebhook } from "./server/webhook.js";
 function getAdapters(_env: Env): Map<string, any> {
   const adapters = new Map();
 
-  // Set up adapters with environment tokens
   const vercelAdapter = new VercelAdapter();
   adapters.set("vercel", vercelAdapter);
 
@@ -105,7 +104,6 @@ export default {
 
         const [, , user, repo, platform] = pathParts;
 
-        // Handle webhook and update deployment status
         const result = await handleWebhook(request, user, repo, platform, env);
 
         return new Response(JSON.stringify(result), {

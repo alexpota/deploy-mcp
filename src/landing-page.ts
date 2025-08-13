@@ -805,7 +805,7 @@ export const landingPageHTML = `<!DOCTYPE html>
       </div>
       <div class="subtitle">Universal Deployment Tracker</div>
       <h1>deploy-mcp</h1>
-      <p class="tagline">Track deployments across all platforms directly in your AI assistant. Never context-switch to check deployment status again.</p>
+      <p class="tagline">Track deployments across all platforms directly in your AI assistant. Real-time streaming, intelligent comparisons, and detailed logs - all in your conversation.</p>
       
       <div class="quick-start">
         <h3>Get Started in Seconds</h3>
@@ -872,11 +872,12 @@ export const landingPageHTML = `<!DOCTYPE html>
           <div style="margin-top: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1);">
             <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;">Claude responds:</p>
             <div style="font-family: 'SF Mono', Monaco, monospace; font-size: 0.875rem; line-height: 1.5; color: #e2e8f0;">
-              ✅ <strong>Status</strong>: Success<br>
-              🌐 <strong>Live URL</strong>: https://my-app.vercel.app<br>
-              ⏱️ <strong>Deployment Time</strong>: 45 seconds<br>
-              📅 <strong>Last Deployed</strong>: 2 minutes ago<br>
-              🔄 <strong>Commit</strong>: "Update homepage hero section"
+              <strong>## Deployment Status</strong><br><br>
+              <strong>Status:</strong> <span style="color: var(--accent-green);">Success</span><br>
+              <strong>URL:</strong> https://my-app.vercel.app<br>
+              <strong>Duration:</strong> 45 seconds<br>
+              <strong>Deployed:</strong> 2 minutes ago<br>
+              <strong>Commit:</strong> "Update homepage hero section"
             </div>
           </div>
         </div>
@@ -1077,7 +1078,37 @@ export const landingPageHTML = `<!DOCTYPE html>
   }
 }</div>
         </div>
-        <p style="color: var(--text-muted); font-size: 0.875rem; text-align: center; margin-top: 1rem;">💡 Replace <code style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.4rem; border-radius: 4px;">your-vercel-token</code> with your actual Vercel API token from <a href="https://vercel.com/account/tokens" target="_blank" style="color: var(--accent-red); text-decoration: none;">vercel.com/account/tokens</a></p>
+        <p style="color: var(--text-muted); font-size: 0.875rem; text-align: center; margin-top: 1rem;"><strong>Note:</strong> Replace <code style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.4rem; border-radius: 4px;">your-vercel-token</code> with your actual Vercel API token from <a href="https://vercel.com/account/tokens" target="_blank" style="color: var(--accent-red); text-decoration: none;">vercel.com/account/tokens</a></p>
+      </div>
+    </div>
+
+    <!-- New Features -->
+    <div class="card">
+      <h2>Powerful Intelligence Features</h2>
+      <p>Real-time streaming and intelligent analysis for complete deployment visibility.</p>
+      <div style="display: inline-block; padding: 0.25rem 0.75rem; background: var(--accent-green); color: white; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem; margin-bottom: 1.5rem;">AVAILABLE NOW</div>
+      <div class="steps">
+        <div class="step">
+          <h3>Watch Deployments</h3>
+          <p>Stream real-time deployment progress with live updates. See state changes, build progress, and instant error detection as they happen.</p>
+          <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+            <code>"Watch my deployment"</code>
+          </div>
+        </div>
+        <div class="step">
+          <h3>Compare Deployments</h3>
+          <p>Compare current deployment with previous versions. See build time changes, identify performance regressions, and track deployment improvements.</p>
+          <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+            <code>"Compare my last 2 deployments"</code>
+          </div>
+        </div>
+        <div class="step">
+          <h3>Analyze Logs</h3>
+          <p>Get intelligent log analysis with error detection and suggested fixes. Filter by error type and get actionable insights instantly.</p>
+          <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+            <code>"Show deployment logs"</code>
+          </div>
+        </div>
       </div>
     </div>
 

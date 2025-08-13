@@ -7,6 +7,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { MCPHandler } from "./core/mcp-handler.js";
 import { VercelAdapter } from "./adapters/index.js";
+import { tools } from "./core/tools.js";
 
 const handler = new MCPHandler(
   new Map([
@@ -30,33 +31,7 @@ const server = new Server(
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   return {
-    tools: [
-      {
-        name: "check_deployment_status",
-        description:
-          "Check the latest deployment status for a project on a platform",
-        inputSchema: {
-          type: "object",
-          properties: {
-            platform: {
-              type: "string",
-              enum: ["vercel"],
-              description: "The deployment platform",
-            },
-            project: {
-              type: "string",
-              description: "The project name or ID",
-            },
-            token: {
-              type: "string",
-              description:
-                "API token for authentication (optional if set in environment)",
-            },
-          },
-          required: ["platform", "project"],
-        },
-      },
-    ],
+    tools: tools,
   };
 });
 
@@ -67,11 +42,16 @@ server.setRequestHandler(CallToolRequestSchema, async (request: any) => {
       request.params.arguments
     );
 
+    // If result has a display field (MCPResponse), use that for formatted output
+    const text = result.display
+      ? result.display
+      : JSON.stringify(result, null, 2);
+
     return {
       content: [
         {
           type: "text",
-          text: JSON.stringify(result, null, 2),
+          text,
         },
       ],
     };
