@@ -85,7 +85,6 @@ describe("DeploymentIntelligence", () => {
       expect(errorEvent).toBeDefined();
       expect(errorEvent?.message).toContain("Deployment failed");
       expect(errorEvent?.details?.suggestion).toBeDefined();
-      // Simplified - AI will provide detailed suggestions
       expect(errorEvent?.details?.suggestion).toContain("See full logs");
     });
 
@@ -176,7 +175,6 @@ TypeScript compilation error`;
       expect(result.logs).toContain("Error: Build failed");
       expect(result.logs).toContain("error");
       expect(result.analysis).toBeDefined();
-      // Simplified - just check basic error detection
       expect(result.analysis?.type).toBe("BUILD");
       expect(result.analysis?.message).toBeTruthy();
     });

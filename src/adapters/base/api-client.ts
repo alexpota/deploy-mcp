@@ -85,7 +85,6 @@ export abstract class BaseAPIClient {
     endpoint: APIEndpoint,
     options?: RequestOptions
   ): Promise<T> {
-    // Check rate limit if token provided
     if (options?.token) {
       await this.checkRateLimit(options.token, endpoint.path);
     }
@@ -103,9 +102,14 @@ export abstract class BaseAPIClient {
 
     if (endpoint.method === "GET" && !options?.body) {
       this.pendingRequests.set(cacheKey, requestPromise);
-      requestPromise.finally(() => {
-        this.pendingRequests.delete(cacheKey);
-      });
+
+      requestPromise
+        .then(() => {
+          this.pendingRequests.delete(cacheKey);
+        })
+        .catch(() => {
+          this.pendingRequests.delete(cacheKey);
+        });
     }
 
     return requestPromise;
@@ -280,7 +284,6 @@ export abstract class BaseAPIClient {
     );
     limiter.lastRefill = now;
 
-    // Check if we have tokens available
     if (limiter.tokens < 1) {
       const waitTime = (1 - limiter.tokens) * (60000 / limiter.refillRate);
       throw new RateLimitError(Math.ceil(waitTime), endpoint);
@@ -290,7 +293,6 @@ export abstract class BaseAPIClient {
     limiter.tokens -= 1;
   }
 
-  // Clean up old rate limiters to prevent memory leak
   protected cleanupRateLimiters(): void {
     const now = Date.now();
     const maxAge = RATE_LIMITER_CLEANUP_AGE_MS;

@@ -357,7 +357,6 @@ export class DeploymentIntelligence {
         }
       }
 
-      // Check if we timed out and send notification
       if (
         attempts >= maxAttempts ||
         Date.now() - startTime >= MAX_WATCH_TIME_MS

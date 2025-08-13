@@ -143,7 +143,6 @@ export class VercelAPI extends BaseAPIClient {
     if (error instanceof Error) {
       const message = error.message.toLowerCase();
 
-      // Check for unauthorized errors
       if (
         ERROR_TEXT_PATTERNS.UNAUTHORIZED.some(pattern =>
           message.includes(pattern)
@@ -156,7 +155,6 @@ export class VercelAPI extends BaseAPIClient {
         );
       }
 
-      // Check for not found errors
       if (
         ERROR_TEXT_PATTERNS.NOT_FOUND.some(pattern => message.includes(pattern))
       ) {
@@ -167,7 +165,6 @@ export class VercelAPI extends BaseAPIClient {
         );
       }
 
-      // Check for rate limit errors
       if (
         ERROR_TEXT_PATTERNS.RATE_LIMITED.some(pattern =>
           message.includes(pattern)
@@ -180,7 +177,6 @@ export class VercelAPI extends BaseAPIClient {
         );
       }
 
-      // Check for timeout errors
       if (
         ERROR_TEXT_PATTERNS.TIMEOUT.some(
           pattern => message.includes(pattern) || error.name === pattern

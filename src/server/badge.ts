@@ -100,23 +100,18 @@ export async function generateBadgeData(
   platform: string,
   env: Env
 ): Promise<ShieldsBadgeData> {
-  // Validate inputs
   if (!validateParams(user, repo, platform)) {
     throw new Error("Invalid parameters");
   }
 
-  // Check if repository exists and is public
   const repoInfo = await validateGitHubRepository(user, repo);
   if (!repoInfo.exists || !repoInfo.isPublic) {
-    // Return error badge for non-existent or private repositories
     return generateErrorBadge(platform, "Repository not found or private");
   }
 
-  // Get deployment status
   const status = await getDeploymentStatus(user, repo, platform, env);
   const config = PLATFORM_CONFIG[platform as Platform];
 
-  // Format message based on status
   const messages = {
     success: "deployed",
     failed: "failed",

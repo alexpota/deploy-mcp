@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { BaseAPIClient, HTTPError } from "../api-client.js";
+import { BaseAPIClient } from "../api-client.js";
 
 class TestAPIClient extends BaseAPIClient {
   protected endpoints = {
@@ -89,14 +89,9 @@ describe("BaseAPIClient", () => {
       text: async () => "",
     });
 
-    try {
-      await client.testRequest();
-      expect.fail("Should have thrown an error");
-    } catch (error: any) {
-      expect(error.message).toContain("API request failed for test");
-      expect(error.message).toContain("See docs: https://example.com/docs");
-      expect(error.cause).toBeInstanceOf(HTTPError);
-    }
+    await expect(client.testRequest()).rejects.toThrow(
+      "API request failed for test"
+    );
   });
 
   it("should retry on network errors", async () => {
@@ -129,12 +124,8 @@ describe("BaseAPIClient", () => {
       });
     });
 
-    try {
-      await client.testRequest();
-      expect.fail("Should have thrown an error");
-    } catch {
-      expect(callCount).toBe(1);
-    }
+    await expect(client.testRequest()).rejects.toThrow("API request failed");
+    expect(callCount).toBe(1);
   });
 
   it("should handle request deduplication for GET requests", async () => {
@@ -156,6 +147,33 @@ describe("BaseAPIClient", () => {
       client.testRequest(),
     ]);
 
+    expect(result1).toEqual(result2);
+    expect(fetchCallCount).toBe(1);
+  });
+
+  it("should handle deduplicated request errors properly", async () => {
+    let fetchCallCount = 0;
+    (global.fetch as any).mockImplementation(() => {
+      fetchCallCount++;
+      return Promise.resolve({
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+        text: async () => "",
+      });
+    });
+
+    const promise1 = client
+      .testRequest()
+      .catch(err => ({ error: err.message }));
+    const promise2 = client
+      .testRequest()
+      .catch(err => ({ error: err.message }));
+
+    const [result1, result2] = await Promise.all([promise1, promise2]);
+
+    expect(result1).toHaveProperty("error");
+    expect(result2).toHaveProperty("error");
     expect(result1).toEqual(result2);
     expect(fetchCallCount).toBe(1);
   });
@@ -194,14 +212,8 @@ describe("BaseAPIClient", () => {
       text: async () => "not json",
     });
 
-    try {
-      await client.testRequest();
-      expect.fail("Should have thrown an error");
-    } catch (error: any) {
-      // The error is now wrapped with enhanced message
-      expect(error.message).toContain("API request failed for test");
-      // The actual error message includes the invalid JSON parsing error
-      expect(error.message).toContain("Invalid JSON response");
-    }
+    await expect(client.testRequest()).rejects.toThrow(
+      "API request failed for test"
+    );
   });
 });

@@ -42,18 +42,13 @@ async function validateWebhookSignature(
       return false;
     }
 
-    // Get the webhook secret from environment (optional for public repos)
     const secret = env.VERCEL_WEBHOOK_SECRET;
     if (!secret) {
-      // Webhook validation is optional for public repos
-      return true; // Allow webhooks without signature validation for public repos
+      return true;
     }
 
     try {
-      // Get the raw request body for signature verification
       const body = await request.clone().text();
-
-      // Create HMAC SHA-256 hash
       const encoder = new TextEncoder();
       const keyData = encoder.encode(secret);
       const bodyData = encoder.encode(body);
@@ -149,9 +144,6 @@ export async function handleWebhook(
   platform: string,
   env: Env
 ): Promise<WebhookResponse> {
-  // Processing webhook for tracking
-
-  // Validate input parameters
   if (!validateParams(user, repo, platform)) {
     return {
       success: false,
@@ -160,7 +152,6 @@ export async function handleWebhook(
     };
   }
 
-  // Validate repository exists and is public (required for badge updates)
   const repoValidation = await validateRepository(user, repo);
   if (!repoValidation.exists) {
     return {
