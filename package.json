@@ -1,6 +1,6 @@
 {
   "name": "deploy-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Universal deployment tracker for AI assistants",
   "keywords": [
     "mcp",
