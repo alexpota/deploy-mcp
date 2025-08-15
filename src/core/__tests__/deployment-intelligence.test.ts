@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { DeploymentIntelligence } from "../deployment-intelligence.js";
 import { VercelAdapter } from "../../adapters/vercel/index.js";
-import { DEFAULT_COMPARISON_COUNT } from "../constants.js";
 
 vi.mock("../../adapters/vercel/index.js");
 
@@ -129,7 +128,7 @@ describe("DeploymentIntelligence", () => {
       const comparison = await intelligence.compareDeployments({
         platform: "vercel",
         project: "test-project",
-        count: DEFAULT_COMPARISON_COUNT,
+        mode: "last_vs_previous",
         token: "test-token",
       });
 
@@ -149,7 +148,7 @@ describe("DeploymentIntelligence", () => {
       const comparison = await intelligence.compareDeployments({
         platform: "vercel",
         project: "test-project",
-        count: DEFAULT_COMPARISON_COUNT,
+        mode: "last_vs_previous",
         token: "test-token",
       });
 

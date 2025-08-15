@@ -1,5 +1,6 @@
 import { BaseAdapter } from "../adapters/base";
 import { VercelAdapter } from "../adapters/vercel";
+import { NetlifyAdapter } from "../adapters/netlify";
 import type {
   WatchDeploymentArgs,
   CompareDeploymentsArgs,
@@ -113,10 +114,27 @@ export interface DeploymentComparison {
 
 export class DeploymentIntelligence {
   private adapter: BaseAdapter;
+  private platform: string;
 
   constructor(platform: string) {
     // Platform-agnostic adapter selection
+    this.platform = platform;
     this.adapter = this.createAdapter(platform);
+  }
+
+  private getTokenForPlatform(): string | undefined {
+    switch (this.platform) {
+      case "vercel":
+        return process.env.VERCEL_TOKEN;
+      case "netlify":
+        return process.env.NETLIFY_TOKEN;
+      case "railway":
+        return process.env.RAILWAY_TOKEN;
+      case "render":
+        return process.env.RENDER_TOKEN;
+      default:
+        return undefined;
+    }
   }
 
   private getPollingInterval(state: string): number {
@@ -162,9 +180,9 @@ export class DeploymentIntelligence {
     switch (platform) {
       case "vercel":
         return new VercelAdapter();
+      case "netlify":
+        return new NetlifyAdapter();
       // Ready for future platforms
-      // case "netlify":
-      //   return new NetlifyAdapter();
       // case "railway":
       //   return new RailwayAdapter();
       // case "render":
@@ -174,10 +192,17 @@ export class DeploymentIntelligence {
     }
   }
 
+  private async getDeployment(
+    deploymentId: string,
+    token: string
+  ): Promise<any> {
+    return this.adapter.getDeploymentById(deploymentId, token);
+  }
+
   async *watchDeployment(
     args: WatchDeploymentArgs
   ): AsyncGenerator<DeploymentEvent> {
-    const token = args.token || process.env.VERCEL_TOKEN;
+    const token = args.token || this.getTokenForPlatform();
     if (!token) {
       yield {
         type: "error",
@@ -383,23 +408,132 @@ export class DeploymentIntelligence {
   async compareDeployments(
     args: CompareDeploymentsArgs
   ): Promise<DeploymentComparison | null> {
-    const token = args.token || process.env.VERCEL_TOKEN;
+    const token = args.token || this.getTokenForPlatform();
     if (!token) {
-      throw new Error("No Vercel token provided");
+      throw new Error(`No ${this.platform} token provided`);
     }
 
     try {
-      const deployments = await this.adapter.getRecentDeployments(
-        args.project,
-        token,
-        args.count
-      );
+      let current: any;
+      let previous: any;
 
-      if (deployments.length < 2) {
-        return null;
+      // Handle different comparison modes
+      switch (args.mode || "last_vs_previous") {
+        case "last_vs_previous": {
+          const deployments = await this.adapter.getRecentDeployments(
+            args.project,
+            token,
+            2
+          );
+          if (deployments.length < 2) return null;
+          [current, previous] = deployments;
+          break;
+        }
+
+        case "current_vs_success": {
+          // Get latest deployment and find last successful one
+          const deployments = await this.adapter.getRecentDeployments(
+            args.project,
+            token,
+            20 // Look back further to find a success
+          );
+          if (deployments.length < 2) return null;
+
+          current = deployments[0];
+          // Find the last successful deployment
+          previous = deployments.find(
+            (d, index) =>
+              index > 0 && (d.state === "READY" || d.readyState === "READY")
+          );
+
+          if (!previous) {
+            // If no successful deployment found, fall back to previous
+            previous = deployments[1];
+          }
+          break;
+        }
+
+        case "current_vs_production": {
+          // Get latest and find the one marked as production
+          const deployments = await this.adapter.getRecentDeployments(
+            args.project,
+            token,
+            20
+          );
+          if (deployments.length < 2) return null;
+
+          current = deployments[0];
+          // Find production deployment (usually has target === "production")
+          previous = deployments.find(
+            (d, index) => index > 0 && d.target === "production"
+          );
+
+          if (!previous) {
+            // Fall back to previous if no production found
+            previous = deployments[1];
+          }
+          break;
+        }
+
+        case "between_dates": {
+          if (!args.dateFrom || !args.dateTo) {
+            throw new Error(
+              "dateFrom and dateTo are required for between_dates mode"
+            );
+          }
+
+          const deployments = await this.adapter.getRecentDeployments(
+            args.project,
+            token,
+            50 // Get more to cover date range
+          );
+
+          const fromTime = new Date(args.dateFrom).getTime();
+          const toTime = new Date(args.dateTo).getTime();
+
+          // Find deployments within date range
+          const inRange = deployments.filter(d => {
+            const deployTime = new Date(d.createdAt).getTime();
+            return deployTime >= fromTime && deployTime <= toTime;
+          });
+
+          if (inRange.length < 2) {
+            throw new Error(
+              "Not enough deployments found in the specified date range"
+            );
+          }
+
+          current = inRange[0];
+          previous = inRange[inRange.length - 1];
+          break;
+        }
+
+        case "by_ids": {
+          if (!args.deploymentA || !args.deploymentB) {
+            throw new Error(
+              "deploymentA and deploymentB are required for by_ids mode"
+            );
+          }
+
+          // Fetch specific deployments by ID
+          [current, previous] = await Promise.all([
+            this.getDeployment(args.deploymentA, token),
+            this.getDeployment(args.deploymentB, token),
+          ]);
+          break;
+        }
+
+        default: {
+          // Default to last_vs_previous
+          const deployments = await this.adapter.getRecentDeployments(
+            args.project,
+            token,
+            2
+          );
+          if (deployments.length < 2) return null;
+          [current, previous] = deployments;
+        }
       }
-
-      const [current, previous] = deployments;
 
       const currentBuildTime =
         current.buildingAt && current.ready
@@ -502,14 +636,29 @@ export class DeploymentIntelligence {
   async getDeploymentLogs(
     args: GetDeploymentLogsArgs
   ): Promise<{ logs: string; analysis?: ErrorAnalysis }> {
-    const token = args.token || process.env.VERCEL_TOKEN;
+    const token = args.token || this.getTokenForPlatform();
     if (!token) {
-      throw new Error("No Vercel token provided");
+      throw new Error(`No ${this.platform} token provided`);
     }
 
     try {
+      // If deploymentId is "latest", get the latest deployment first
+      let actualDeploymentId = args.deploymentId;
+      if (args.deploymentId === "latest" && args.project) {
+        const latestDeployment = await this.adapter.getLatestDeployment(
+          args.project,
+          token
+        );
+        if (!latestDeployment.id) {
+          throw new Error("Latest deployment has no ID");
+        }
+        actualDeploymentId = latestDeployment.id;
+      } else if (args.deploymentId === "latest" && !args.project) {
+        throw new Error("Project name required when using 'latest' deployment");
+      }
+
       const logs = await this.adapter.getDeploymentLogs(
-        args.deploymentId,
+        actualDeploymentId,
         token
       );
 

@@ -181,6 +181,26 @@ export const VERCEL_STATES = {
   QUEUED: "QUEUED",
 } as const;
 
+// Netlify deployment states from official API
+// Source: https://github.com/netlify/open-api/blob/master/swagger.yml
+export const NETLIFY_STATES = {
+  NEW: "new",
+  PENDING_REVIEW: "pending_review",
+  ACCEPTED: "accepted",
+  REJECTED: "rejected",
+  ENQUEUED: "enqueued",
+  BUILDING: "building",
+  UPLOADING: "uploading",
+  UPLOADED: "uploaded",
+  PREPARING: "preparing",
+  PREPARED: "prepared",
+  PROCESSING: "processing",
+  PROCESSED: "processed",
+  READY: "ready",
+  ERROR: "error",
+  RETRYING: "retrying",
+} as const;
+
 // Error messages for adapters
 export const ADAPTER_ERRORS = {
   TOKEN_REQUIRED:

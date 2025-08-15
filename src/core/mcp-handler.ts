@@ -156,14 +156,11 @@ export class MCPHandler {
       const formattedStatus = this.formatResponse(status, validated.platform);
       return ResponseFormatter.formatStatus(formattedStatus);
     } catch (error) {
-      console.error(`Error checking deployment status: ${error}`);
-      const errorStatus = {
-        status: "error",
-        platform: validated.platform,
-        projectName: validated.project,
-        timestamp: new Date().toISOString(),
-      };
-      return ResponseFormatter.formatStatus(errorStatus);
+      console.error(`Error checking deployment status:`, error);
+      // Return the actual error message instead of a fake failed status
+      throw new Error(
+        `Failed to get deployment status: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 

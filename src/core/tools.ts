@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Define supported platforms - ready for future expansion
-const SUPPORTED_PLATFORMS = ["vercel"] as const;
+const SUPPORTED_PLATFORMS = ["vercel", "netlify"] as const;
 // Future platforms ready to be added when implemented
 // const ALL_PLATFORMS = ["vercel", "netlify", "railway", "render"] as const;
 
@@ -30,10 +30,32 @@ export const watchDeploymentSchema = z.object({
 export const compareDeploymentsSchema = z.object({
   platform: z.enum(SUPPORTED_PLATFORMS).describe("The deployment platform"),
   project: z.string().describe("The project name or ID"),
-  count: z
-    .number()
-    .default(2)
-    .describe("Number of deployments to compare (default: 2)"),
+  mode: z
+    .enum([
+      "last_vs_previous", // Default: current vs previous
+      "current_vs_success", // Compare to last successful deploy
+      "current_vs_production", // Compare to what's in production
+      "between_dates", // Compare deployments from specific dates
+      "by_ids", // Compare two specific deployment IDs
+    ])
+    .default("last_vs_previous")
+    .describe("Comparison mode to use"),
+  deploymentA: z
+    .string()
+    .optional()
+    .describe("First deployment ID (for by_ids mode)"),
+  deploymentB: z
+    .string()
+    .optional()
+    .describe("Second deployment ID (for by_ids mode)"),
+  dateFrom: z
+    .string()
+    .optional()
+    .describe("Start date (for between_dates mode, ISO format)"),
+  dateTo: z
+    .string()
+    .optional()
+    .describe("End date (for between_dates mode, ISO format)"),
   token: z
     .string()
     .optional()
@@ -42,7 +64,15 @@ export const compareDeploymentsSchema = z.object({
 
 export const getDeploymentLogsSchema = z.object({
   platform: z.enum(SUPPORTED_PLATFORMS).describe("The deployment platform"),
-  deploymentId: z.string().describe("The deployment ID"),
+  deploymentId: z
+    .string()
+    .describe("The deployment ID or 'latest' for most recent"),
+  project: z
+    .string()
+    .optional()
+    .describe(
+      "Project/site name (required when using 'latest' as deploymentId)"
+    ),
   filter: z
     .enum(["error", "warning", "all"])
     .default("error")
@@ -63,7 +93,7 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel"],
+          enum: ["vercel", "netlify"],
           description: "The deployment platform",
         },
         project: {
@@ -88,7 +118,7 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel"],
+          enum: ["vercel", "netlify"],
           description: "The deployment platform",
         },
         project: {
@@ -112,23 +142,49 @@ export const tools = [
   {
     name: "compare_deployments",
     description:
-      "Compare recent deployments to identify changes, performance differences, and potential issues",
+      "Compare deployments using smart comparison modes to identify changes, performance differences, and potential issues",
     inputSchema: {
       type: "object",
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel"],
+          enum: ["vercel", "netlify"],
           description: "The deployment platform",
         },
         project: {
           type: "string",
           description: "The project name or ID",
         },
-        count: {
-          type: "number",
-          default: 2,
-          description: "Number of deployments to compare (default: 2)",
+        mode: {
+          type: "string",
+          enum: [
+            "last_vs_previous",
+            "current_vs_success",
+            "current_vs_production",
+            "between_dates",
+            "by_ids",
+          ],
+          default: "last_vs_previous",
+          description:
+            "Comparison mode: last_vs_previous (default), current_vs_success, current_vs_production, between_dates, or by_ids",
+        },
+        deploymentA: {
+          type: "string",
+          description: "First deployment ID (required for by_ids mode)",
+        },
+        deploymentB: {
+          type: "string",
+          description: "Second deployment ID (required for by_ids mode)",
+        },
+        dateFrom: {
+          type: "string",
+          description:
+            "Start date in ISO format (required for between_dates mode)",
+        },
+        dateTo: {
+          type: "string",
+          description:
+            "End date in ISO format (required for between_dates mode)",
         },
         token: {
           type: "string",
@@ -148,12 +204,17 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel"],
+          enum: ["vercel", "netlify"],
           description: "The deployment platform",
         },
         deploymentId: {
           type: "string",
-          description: "The deployment ID",
+          description: "The deployment ID or 'latest' for most recent",
+        },
+        project: {
+          type: "string",
+          description:
+            "Project/site name (required when using 'latest' as deploymentId)",
         },
         filter: {
           type: "string",

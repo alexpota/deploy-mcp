@@ -6,13 +6,17 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { MCPHandler } from "./core/mcp-handler.js";
-import { VercelAdapter } from "./adapters/index.js";
+import {
+  VercelAdapter,
+  NetlifyAdapter,
+  BaseAdapter,
+} from "./adapters/index.js";
 import { tools } from "./core/tools.js";
 
 const handler = new MCPHandler(
-  new Map([
+  new Map<string, BaseAdapter>([
     ["vercel", new VercelAdapter()],
-    // ['netlify', new NetlifyAdapter()] // To be implemented
+    ["netlify", new NetlifyAdapter()],
   ])
 );
 
