@@ -6,9 +6,15 @@
     "mcp",
     "deployment",
     "vercel",
+    "netlify",
     "ai",
     "claude",
-    "deployment-tracking"
+    "deployment-tracking",
+    "netlify-deployment",
+    "vercel-deployment",
+    "deployment-status",
+    "deployment-monitor",
+    "ci-cd"
   ],
   "author": "Alex Potapenko <alex.potapenko.dev@gmail.com>",
   "license": "Apache-2.0",

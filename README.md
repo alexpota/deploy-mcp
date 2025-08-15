@@ -275,26 +275,28 @@ Get live deployment status badges for your repositories:
 
 ### Badge Format
 
+The deploy-mcp.io endpoint returns JSON data for shields.io. Use the shields.io endpoint wrapper:
+
 ```markdown
-![Platform Deployment](https://deploy-mcp.io/badge/{username}/{repository}/{platform})
+![Platform Deployment](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/{username}/{repository}/{platform})
 ```
 
 ### Examples by Platform
 
 #### Vercel Badge
 ```markdown
-![Vercel](https://deploy-mcp.io/badge/john/my-app/vercel)
+![Vercel](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/john/my-app/vercel)
 ```
 
 #### Netlify Badge
 ```markdown
-![Netlify](https://deploy-mcp.io/badge/john/my-app/netlify)
+![Netlify](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/john/my-app/netlify)
 ```
 
 #### Multiple Badges
 ```markdown
-![Vercel](https://deploy-mcp.io/badge/john/my-app/vercel)
-![Netlify](https://deploy-mcp.io/badge/john/my-app/netlify)
+![Vercel](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/john/my-app/vercel)
+![Netlify](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/john/my-app/netlify)
 ```
 
 ### Webhook Configuration
