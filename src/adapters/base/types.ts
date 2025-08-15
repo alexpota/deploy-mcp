@@ -29,7 +29,8 @@ export type AdapterError =
   | "NOT_FOUND"
   | "RATE_LIMITED"
   | "NETWORK_ERROR"
-  | "UNKNOWN_ERROR";
+  | "UNKNOWN_ERROR"
+  | "UNKNOWN";
 
 export class AdapterException extends Error {
   constructor(

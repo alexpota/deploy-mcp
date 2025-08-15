@@ -211,7 +211,14 @@ export abstract class BaseAPIClient {
     path: string,
     params?: Record<string, string | number | boolean>
   ): URL {
-    const url = new URL(path, this.baseUrl);
+    // Remove leading slash from path if present to avoid replacing base path
+    const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+    // Ensure base URL ends with slash for proper path joining
+    const baseUrlString = this.baseUrl.toString();
+    const baseWithSlash = baseUrlString.endsWith("/")
+      ? baseUrlString
+      : baseUrlString + "/";
+    const url = new URL(cleanPath, baseWithSlash);
 
     if (params) {
       const searchParams = new URLSearchParams();

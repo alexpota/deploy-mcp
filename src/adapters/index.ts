@@ -11,7 +11,9 @@ export { AdapterException } from "./base/index.js";
 export { VercelAdapter } from "./vercel/index.js";
 export type { VercelDeployment, VercelConfig } from "./vercel/index.js";
 
+export { NetlifyAdapter } from "./netlify/index.js";
+export type { NetlifyDeploy, NetlifyConfig } from "./netlify/types.js";
+
 // Future adapters will be exported here:
-// export { NetlifyAdapter } from './netlify/index.js';
 // export { RailwayAdapter } from './railway/index.js';
 // export { RenderAdapter } from './render/index.js';
