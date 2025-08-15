@@ -692,7 +692,7 @@ export const landingPageHTML = `<!DOCTYPE html>
         </div>
 
         <div class="badge-code">
-          <code>![Deploy Status](https://deploy-mcp.io/badge/{user}/{repo}/{platform})</code>
+          <code>![Deploy Status](https://img.shields.io/endpoint?url=https://deploy-mcp.io/badge/{user}/{repo}/{platform})</code>
         </div>
 
         <p style="margin-top: 24px; font-size: 14px; color: var(--text-dim);">
