@@ -56,17 +56,34 @@ export interface VercelUserResponse {
   };
 }
 
-export interface VercelProjectResponse {
+export interface VercelProject {
   id: string;
   name: string;
   accountId: string;
   createdAt: number;
   updatedAt: number;
-  targets?: {
-    production?: {
-      id: string;
-      domain: string;
-    };
+  framework?: string | null;
+  gitForkProtection?: boolean;
+  link?: {
+    type: string;
+    repo: string;
+    org: string;
+    repoId?: number;
+  };
+  latestDeployments?: Array<{
+    id: string;
+    url: string;
+    readyState: string;
+    createdAt: number;
+  }>;
+}
+
+export interface VercelProjectsResponse {
+  projects: VercelProject[];
+  pagination: {
+    count: number;
+    next?: number | null;
+    prev?: number | null;
   };
 }
 

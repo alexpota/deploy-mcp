@@ -5,10 +5,16 @@ import {
   watchDeploymentSchema,
   compareDeploymentsSchema,
   getDeploymentLogsSchema,
+  listProjectsSchema,
   tools,
 } from "./tools.js";
 import { DeploymentIntelligence } from "./deployment-intelligence.js";
-import { DEFAULTS } from "./constants.js";
+import {
+  DEFAULTS,
+  PLATFORM,
+  VERCEL_STATES,
+  NETLIFY_STATES,
+} from "./constants.js";
 import { ResponseFormatter, MCPResponse } from "./response-formatter.js";
 
 export class MCPHandler {
@@ -101,6 +107,8 @@ export class MCPHandler {
         return this.compareDeployments(args);
       case "get_deployment_logs":
         return this.getDeploymentLogs(args);
+      case "list_projects":
+        return this.listProjects(args);
       default:
         throw new Error(`Unknown tool: ${tool}`);
     }
@@ -149,18 +157,113 @@ export class MCPHandler {
     }
 
     try {
-      const status = await adapter.getLatestDeployment(
-        validated.project,
-        validated.token
-      );
-      const formattedStatus = this.formatResponse(status, validated.platform);
-      return ResponseFormatter.formatStatus(formattedStatus);
+      if (validated.limit === 1) {
+        const status = await adapter.getLatestDeployment(
+          validated.project,
+          validated.token
+        );
+        const formattedStatus = this.formatResponse(status, validated.platform);
+        return ResponseFormatter.formatStatus(formattedStatus);
+      } else {
+        const deployments = await adapter.getRecentDeployments(
+          validated.project,
+          validated.token ||
+            process.env[`${validated.platform.toUpperCase()}_TOKEN`] ||
+            "",
+          validated.limit
+        );
+
+        if (deployments.length === 0) {
+          return ResponseFormatter.formatStatus({
+            status: "unknown",
+            projectName: validated.project,
+            platform: validated.platform,
+            timestamp: new Date().toISOString(),
+          });
+        }
+
+        const statuses = deployments.map(d =>
+          this.formatDeploymentStatus(d, validated.platform)
+        );
+        return ResponseFormatter.formatMultipleStatuses(statuses);
+      }
     } catch (error) {
       console.error(`Error checking deployment status:`, error);
-      // Return the actual error message instead of a fake failed status
       throw new Error(
         `Failed to get deployment status: ${error instanceof Error ? error.message : String(error)}`
       );
+    }
+  }
+
+  private formatDeploymentStatus(deployment: any, platform: string): any {
+    if (platform === PLATFORM.VERCEL) {
+      return {
+        id: deployment.uid,
+        status: this.mapVercelState(deployment.state),
+        url: deployment.url ? `https://${deployment.url}` : undefined,
+        projectName: deployment.name,
+        platform: platform,
+        timestamp: new Date(deployment.createdAt).toISOString(),
+        duration: deployment.ready
+          ? Math.floor((deployment.ready - deployment.createdAt) / 1000)
+          : undefined,
+        environment: deployment.target || "production",
+        commit: deployment.meta
+          ? {
+              sha: deployment.meta.githubCommitSha,
+              message: deployment.meta.githubCommitMessage,
+              author: deployment.meta.githubCommitAuthorName,
+            }
+          : undefined,
+      };
+    } else if (platform === PLATFORM.NETLIFY) {
+      return {
+        id: deployment.id,
+        status: this.mapNetlifyState(deployment.state),
+        url: deployment.ssl_url || deployment.url,
+        projectName: deployment.name,
+        platform: platform,
+        timestamp: deployment.created_at,
+        duration: deployment.deploy_time,
+        environment: deployment.context || "production",
+        commit: deployment.commit_ref
+          ? {
+              sha: deployment.commit_ref,
+              message: deployment.title,
+              author: deployment.committer,
+            }
+          : undefined,
+      };
+    }
+    return deployment;
+  }
+
+  private mapVercelState(state: string): string {
+    switch (state) {
+      case VERCEL_STATES.READY:
+        return "success";
+      case VERCEL_STATES.ERROR:
+      case VERCEL_STATES.CANCELED:
+        return "failed";
+      case VERCEL_STATES.BUILDING:
+      case VERCEL_STATES.INITIALIZING:
+      case VERCEL_STATES.QUEUED:
+        return "building";
+      default:
+        return "unknown";
+    }
+  }
+
+  private mapNetlifyState(state: string): string {
+    switch (state) {
+      case NETLIFY_STATES.READY:
+      case NETLIFY_STATES.PROCESSED:
+        return "success";
+      case NETLIFY_STATES.ERROR:
+      case NETLIFY_STATES.REJECTED:
+        return "failed";
+      default:
+        return "building";
     }
   }
 
@@ -261,5 +364,78 @@ ${messages.join("\n\n")}
 
   private schemaToJsonSchema(zodSchema: any): any {
     return JSON.parse(JSON.stringify(zodSchema));
+  }
+
+  private async listProjects(args: ToolArguments): Promise<MCPResponse> {
+    const validated = listProjectsSchema.parse(args);
+
+    const adapter = this.adapters.get(validated.platform);
+    if (!adapter) {
+      throw new Error(`Unsupported platform: ${validated.platform}`);
+    }
+
+    const tokenEnvKey = `${validated.platform.toUpperCase()}_TOKEN`;
+    const token = validated.token || process.env[tokenEnvKey];
+
+    if (!token) {
+      throw new Error(
+        `Authentication required. Please provide a token or set ${tokenEnvKey} environment variable.`
+      );
+    }
+
+    try {
+      const projects = await adapter.listProjects(token, validated.limit);
+
+      const display = `## Projects on ${validated.platform}
+
+### Found ${projects.length} project${projects.length !== 1 ? "s" : ""}
+
+${projects
+  .map((p, i) => {
+    const safeName = p.name.replace(/[<>"'&]/g, "");
+    return `**${i + 1}. ${safeName}**  
+   ID: \`${p.id}\`  
+   ${p.url ? `URL: ${p.url}` : "URL: Not deployed yet"}`;
+  })
+  .join("\n\n")}
+
+${projects.length === validated.limit ? `\n*Showing first ${validated.limit} projects. Use a higher limit to see more.*` : ""}`;
+
+      return {
+        version: "1.0",
+        tool: "list_projects",
+        timestamp: new Date().toISOString(),
+        display,
+        data: {
+          platform: validated.platform,
+          count: projects.length,
+          projects: projects.map(p => ({
+            id: p.id,
+            name: p.name,
+            url: p.url,
+          })),
+        },
+        highlights: {
+          status: `${projects.length} projects found`,
+        },
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+
+      if (message.includes("401") || message.includes("unauthorized")) {
+        throw new Error(
+          `Authentication failed. Please check your ${validated.platform} token.`
+        );
+      }
+      if (message.includes("429") || message.includes("rate limit")) {
+        throw new Error(
+          `Rate limit exceeded for ${validated.platform}. Please try again later.`
+        );
+      }
+
+      throw new Error(
+        `Failed to list projects on ${validated.platform}: ${message}`
+      );
+    }
   }
 }

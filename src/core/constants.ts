@@ -157,7 +157,7 @@ export const API_CONFIG = {
 } as const;
 
 // Platform names
-export const PLATFORM_NAMES = {
+export const PLATFORM = {
   VERCEL: "vercel",
   NETLIFY: "netlify",
   RAILWAY: "railway",

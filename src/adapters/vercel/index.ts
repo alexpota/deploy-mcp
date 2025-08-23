@@ -3,7 +3,7 @@ import { DeploymentStatus } from "../../types.js";
 import { VercelAPI } from "./api.js";
 import {
   API_CONFIG,
-  PLATFORM_NAMES,
+  PLATFORM,
   ENVIRONMENT_TYPES,
   VERCEL_STATES,
   ADAPTER_ERRORS,
@@ -11,7 +11,7 @@ import {
 import type { VercelDeployment, VercelConfig } from "./types.js";
 
 export class VercelAdapter extends BaseAdapter {
-  name = PLATFORM_NAMES.VERCEL;
+  name = PLATFORM.VERCEL;
   private api: VercelAPI;
 
   constructor(config?: Partial<VercelConfig>) {
@@ -46,7 +46,7 @@ export class VercelAdapter extends BaseAdapter {
         return {
           status: ADAPTER_ERRORS.UNKNOWN_STATUS as "unknown",
           projectName: project,
-          platform: PLATFORM_NAMES.VERCEL,
+          platform: PLATFORM.VERCEL,
         };
       }
 
@@ -76,7 +76,7 @@ export class VercelAdapter extends BaseAdapter {
       status,
       url: deployment.url ? `https://${deployment.url}` : undefined,
       projectName: deployment.name,
-      platform: PLATFORM_NAMES.VERCEL,
+      platform: PLATFORM.VERCEL,
       timestamp: this.formatTimestamp(deployment.createdAt),
       duration: deployment.ready
         ? this.calculateDuration(deployment.createdAt, deployment.ready)
@@ -139,6 +139,21 @@ export class VercelAdapter extends BaseAdapter {
   ): Promise<DeploymentStatus> {
     return this.getLatestDeployment(project, token);
   }
+
+  async listProjects(
+    token: string,
+    limit = 20
+  ): Promise<Array<{ id: string; name: string; url?: string }>> {
+    const response = await this.api.listProjects(token, limit);
+
+    return response.projects.map(project => ({
+      id: project.id,
+      name: project.name,
+      url: project.latestDeployments?.[0]?.url
+        ? `https://${project.latestDeployments[0].url}`
+        : undefined,
+    }));
+  }
 }
 
-export type { VercelDeployment, VercelConfig } from "./types.js";
+export type { VercelDeployment, VercelConfig, VercelProject } from "./types.js";

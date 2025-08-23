@@ -23,6 +23,11 @@ export abstract class BaseAdapter {
     token: string
   ): Promise<string>;
 
+  abstract listProjects(
+    token: string,
+    limit?: number
+  ): Promise<Array<{ id: string; name: string; url?: string }>>;
+
   protected formatTimestamp(date: Date | string | number): string {
     return new Date(date).toISOString();
   }

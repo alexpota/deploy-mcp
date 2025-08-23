@@ -188,4 +188,47 @@ ${
 
     return formatted;
   }
+
+  static formatMultipleStatuses(statuses: any[]): MCPResponse {
+    const display = `## Deployment History
+
+### Recent Deployments (${statuses.length})
+
+${statuses
+  .map((status, index) => {
+    const statusIcon =
+      status.status === "success"
+        ? "✅"
+        : status.status === "building"
+          ? "🔄"
+          : status.status === "failed"
+            ? "❌"
+            : "❓";
+
+    return `**${index + 1}. ${statusIcon} ${status.projectName}**  
+   Status: ${status.status}  
+   Environment: ${status.environment || "production"}  
+   ${status.url ? `URL: ${status.url}  ` : ""}  
+   Time: ${status.timestamp}  
+   ${status.duration ? `Duration: ${status.duration}s  ` : ""}  
+   ${status.commit ? `Commit: \`${status.commit.sha?.slice(0, 7) || "N/A"}\` ${status.commit.message || ""}` : ""}`;
+  })
+  .join("\n\n")}
+`;
+
+    return {
+      version: "1.0",
+      tool: "check_deployment_status",
+      timestamp: new Date().toISOString(),
+      display,
+      data: {
+        count: statuses.length,
+        deployments: statuses,
+      },
+      highlights: {
+        status: `${statuses.length} deployments`,
+        url: statuses[0]?.url,
+      },
+    };
+  }
 }
