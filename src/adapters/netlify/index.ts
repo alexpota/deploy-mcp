@@ -8,9 +8,10 @@ import { DeploymentStatus } from "../../types.js";
 import { NetlifyAPI } from "./api.js";
 import { NetlifyDeploy, NetlifyDeployState } from "./types.js";
 import { AdapterException } from "../base/types.js";
+import { PLATFORM } from "../../core/constants.js";
 
 export class NetlifyAdapter extends BaseAdapter {
-  name = "netlify";
+  name = PLATFORM.NETLIFY;
   private api: NetlifyAPI;
 
   constructor() {
@@ -198,5 +199,18 @@ export class NetlifyAdapter extends BaseAdapter {
         `Failed to fetch deployment logs: ${message}`
       );
     }
+  }
+
+  async listProjects(
+    token: string,
+    limit = 20
+  ): Promise<Array<{ id: string; name: string; url?: string }>> {
+    const sites = await this.api.listSites(token, limit);
+
+    return sites.map(site => ({
+      id: site.id,
+      name: site.name,
+      url: site.ssl_url || site.url || undefined,
+    }));
   }
 }

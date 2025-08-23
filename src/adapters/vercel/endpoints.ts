@@ -29,6 +29,13 @@ export const VercelEndpoints = {
       "https://vercel.com/docs/rest-api/endpoints/user#get-the-authenticated-user",
     description: "Get authenticated user information",
   },
+  listProjects: {
+    path: "/v10/projects",
+    method: "GET",
+    docsUrl:
+      "https://vercel.com/docs/rest-api/reference/endpoints/projects/retrieve-a-list-of-projects",
+    description: "List all projects for authenticated user or team",
+  },
 } as const satisfies Record<string, APIEndpoint>;
 
 export type VercelEndpointName = keyof typeof VercelEndpoints;

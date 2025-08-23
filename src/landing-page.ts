@@ -657,7 +657,7 @@ export const landingPageHTML = `<!DOCTYPE html>
       <div class="tools-grid">
         <div class="tool">
           <div class="tool-name">check_deployment_status</div>
-          <div class="tool-desc">Get the latest deployment status for any project</div>
+          <div class="tool-desc">Get latest deployment status or view deployment history</div>
         </div>
 
         <div class="tool">
@@ -673,6 +673,11 @@ export const landingPageHTML = `<!DOCTYPE html>
         <div class="tool">
           <div class="tool-name">get_deployment_logs</div>
           <div class="tool-desc">Fetch and analyze deployment logs with error detection</div>
+        </div>
+
+        <div class="tool">
+          <div class="tool-name">list_projects</div>
+          <div class="tool-desc">Discover all your projects and sites across platforms</div>
         </div>
       </div>
     </section>

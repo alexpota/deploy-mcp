@@ -9,6 +9,7 @@ class MockAdapter extends BaseAdapter {
   getDeploymentById = vi.fn();
   getRecentDeployments = vi.fn();
   getDeploymentLogs = vi.fn();
+  listProjects = vi.fn();
 }
 
 describe("MCPHandler", () => {
@@ -57,6 +58,70 @@ describe("MCPHandler", () => {
         "Unknown tool: unknown_tool"
       );
     });
+
+    it("should handle list_projects", async () => {
+      mockAdapter.listProjects.mockResolvedValue([
+        { id: "proj1", name: "Project 1", url: "https://proj1.vercel.app" },
+        { id: "proj2", name: "Project 2", url: "https://proj2.vercel.app" },
+      ]);
+
+      const result = await handler.handleToolCall("list_projects", {
+        platform: "vercel",
+        limit: 10,
+      });
+
+      expect(result.version).toBe("1.0");
+      expect(result.tool).toBe("list_projects");
+      expect(result.display).toContain("Projects on vercel");
+      expect(result.display).toContain("Project 1");
+      expect(result.display).toContain("Project 2");
+      expect(result.data.count).toBe(2);
+      expect(result.data.projects).toHaveLength(2);
+      expect(mockAdapter.listProjects).toHaveBeenCalledWith("test-token", 10);
+    });
+
+    it("should handle check_deployment_status with history limit", async () => {
+      const mockDeployments = [
+        {
+          uid: "dep1",
+          state: "READY",
+          url: "test1.vercel.app",
+          name: "test-project",
+          createdAt: Date.now() - 3600000,
+          ready: Date.now() - 3000000,
+          target: "production",
+        },
+        {
+          uid: "dep2",
+          state: "ERROR",
+          url: "test2.vercel.app",
+          name: "test-project",
+          createdAt: Date.now() - 7200000,
+          ready: Date.now() - 6600000,
+          target: "preview",
+        },
+      ];
+
+      mockAdapter.getRecentDeployments.mockResolvedValue(mockDeployments);
+
+      const result = await handler.handleToolCall("check_deployment_status", {
+        platform: "vercel",
+        project: "test-project",
+        limit: 5,
+      });
+
+      expect(result.version).toBe("1.0");
+      expect(result.tool).toBe("check_deployment_status");
+      expect(result.display).toContain("Deployment History");
+      expect(result.display).toContain("Recent Deployments (2)");
+      expect(result.data.count).toBe(2);
+      expect(result.data.deployments).toHaveLength(2);
+      expect(mockAdapter.getRecentDeployments).toHaveBeenCalledWith(
+        "test-project",
+        "test-token",
+        5
+      );
+    });
   });
 
   describe("handleRequest", () => {
@@ -66,11 +131,12 @@ describe("MCPHandler", () => {
       });
 
       expect(result.tools).toBeDefined();
-      expect(result.tools).toHaveLength(4);
+      expect(result.tools).toHaveLength(5);
       expect(result.tools[0].name).toBe("check_deployment_status");
       expect(result.tools[1].name).toBe("watch_deployment");
       expect(result.tools[2].name).toBe("compare_deployments");
       expect(result.tools[3].name).toBe("get_deployment_logs");
+      expect(result.tools[4].name).toBe("list_projects");
     });
 
     it("should handle tools/call request", async () => {

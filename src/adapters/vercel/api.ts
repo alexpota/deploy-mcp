@@ -12,6 +12,7 @@ import type {
   VercelUserResponse,
   VercelConfig,
   VercelDeployment,
+  VercelProjectsResponse,
 } from "./types.js";
 
 export class VercelAPI extends BaseAPIClient {
@@ -136,6 +137,26 @@ export class VercelAPI extends BaseAPIClient {
         error,
         `Failed to fetch logs for deployment ${deploymentId}`
       );
+    }
+  }
+
+  async listProjects(
+    token: string,
+    limit = 20
+  ): Promise<VercelProjectsResponse> {
+    try {
+      return await this.request<VercelProjectsResponse>(
+        this.endpoints.listProjects,
+        {
+          searchParams: { limit: limit.toString() },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          token, // Pass token for rate limiting
+        }
+      );
+    } catch (error) {
+      throw this.handleApiError(error, "Failed to fetch projects list");
     }
   }
 

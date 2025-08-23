@@ -12,6 +12,12 @@ export const checkDeploymentStatusSchema = z.object({
     .string()
     .optional()
     .describe("API token for authentication (optional if set in environment)"),
+  limit: z
+    .number()
+    .min(1)
+    .max(20)
+    .default(1)
+    .describe("Number of recent deployments to return (default: 1, max: 20)"),
 });
 
 export const watchDeploymentSchema = z.object({
@@ -83,6 +89,20 @@ export const getDeploymentLogsSchema = z.object({
     .describe("API token for authentication (optional if set in environment)"),
 });
 
+export const listProjectsSchema = z.object({
+  platform: z.enum(SUPPORTED_PLATFORMS).describe("The deployment platform"),
+  limit: z
+    .number()
+    .min(1)
+    .max(100)
+    .default(20)
+    .describe("Maximum number of projects to return (default: 20, max: 100)"),
+  token: z
+    .string()
+    .optional()
+    .describe("API token for authentication (optional if set in environment)"),
+});
+
 export const tools = [
   {
     name: "check_deployment_status",
@@ -104,6 +124,14 @@ export const tools = [
           type: "string",
           description:
             "API token for authentication (optional if set in environment)",
+        },
+        limit: {
+          type: "number",
+          minimum: 1,
+          maximum: 20,
+          default: 1,
+          description:
+            "Number of recent deployments to return (default: 1, max: 20)",
         },
       },
       required: ["platform", "project"],
@@ -231,6 +259,35 @@ export const tools = [
       required: ["platform", "deploymentId"],
     },
   },
+  {
+    name: "list_projects",
+    description:
+      "List all available projects/sites on a platform that you have access to",
+    inputSchema: {
+      type: "object",
+      properties: {
+        platform: {
+          type: "string",
+          enum: ["vercel", "netlify"],
+          description: "The deployment platform",
+        },
+        limit: {
+          type: "number",
+          minimum: 1,
+          maximum: 100,
+          default: 20,
+          description:
+            "Maximum number of projects to return (default: 20, max: 100)",
+        },
+        token: {
+          type: "string",
+          description:
+            "API token for authentication (optional if set in environment)",
+        },
+      },
+      required: ["platform"],
+    },
+  },
 ];
 
 export type CheckDeploymentStatusArgs = z.infer<
@@ -242,3 +299,5 @@ export type WatchDeploymentArgs = z.infer<typeof watchDeploymentSchema>;
 export type CompareDeploymentsArgs = z.infer<typeof compareDeploymentsSchema>;
 
 export type GetDeploymentLogsArgs = z.infer<typeof getDeploymentLogsSchema>;
+
+export type ListProjectsArgs = z.infer<typeof listProjectsSchema>;

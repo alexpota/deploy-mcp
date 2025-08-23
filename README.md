@@ -116,6 +116,8 @@ You can use **multiple platforms simultaneously** by providing tokens for each p
    - `"What's the status of my latest Vercel deployment?"`
    - `"Show me Vercel deployment logs"`
    - `"Watch my Vercel deployment progress"`
+   - `"List all my Vercel projects"`
+   - `"Show last 5 deployments for project-name"`
 
 4. **Required permissions:** Read access to deployments and projects
 
@@ -146,6 +148,8 @@ You can use **multiple platforms simultaneously** by providing tokens for each p
    - `"What's the status of my latest Netlify deployment?"`
    - `"Show me Netlify deployment logs"`
    - `"Watch my Netlify deployment progress"`
+   - `"List all my Netlify sites"`
+   - `"Show deployment history for site-name"`
 
 4. **Required permissions:** Read access to sites and deploys
 
@@ -338,10 +342,11 @@ deploy-mcp provides these tools to your AI assistant:
 
 | Tool | Description | Example Command |
 |------|-------------|-----------------|
-| `check_deployment_status` | Get latest deployment status | *"Check my deployment status"* |
+| `check_deployment_status` | Get latest deployment status or history | *"Check my deployment status"* / *"Show last 5 deployments"* |
 | `watch_deployment` | Monitor deployment in real-time | *"Watch my deployment progress"* |
 | `compare_deployments` | Compare recent deployments | *"Compare my last 2 deployments"* |
 | `get_deployment_logs` | Fetch deployment logs | *"Show me deployment logs"* |
+| `list_projects` | List all available projects | *"List my Vercel projects"* / *"Show all Netlify sites"* |
 
 ### Platform-Specific Usage
 
@@ -349,9 +354,30 @@ Commands work across all configured platforms:
 
 ```
 "Check my Vercel deployment for my-app"
+"Show last 10 deployments for my-app on Vercel"
+"List all my Vercel projects"
 "Check my Netlify deployment for my-site"
 "Show me logs for deployment abc123 on Vercel"
 "Watch my Netlify deployment progress"
+"Show all my Netlify sites"
+```
+
+### New Features
+
+#### List Projects
+Discover all your projects/sites across platforms:
+```
+"List my Vercel projects"
+"Show all Netlify sites"
+"What projects do I have on Vercel?"
+```
+
+#### Deployment History
+View multiple recent deployments at once:
+```
+"Show last 5 deployments for my-app"
+"Get deployment history for my-site"
+"Check last 10 deployments on Vercel"
 ```
 
 The AI will automatically use the correct platform based on:

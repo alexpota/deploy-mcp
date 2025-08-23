@@ -1,6 +1,7 @@
 /**
  * Netlify API client
  * Docs: https://docs.netlify.com/api/get-started/
+ * OpenAPI Spec: https://open-api.netlify.com/
  */
 
 import { BaseAPIClient, RequestOptions } from "../base/api-client.js";
@@ -61,17 +62,6 @@ export class NetlifyAPI extends BaseAPIClient {
     // Cache and return the site ID
     this.siteCache.set(siteNameOrId, site.id);
     return site.id;
-  }
-
-  async listSites(token: string): Promise<NetlifySite[]> {
-    const options: RequestOptions = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      token,
-    };
-
-    return this.request<NetlifySite[]>(this.endpoints.listSites, options);
   }
 
   async listDeploys(
@@ -142,5 +132,19 @@ export class NetlifyAPI extends BaseAPIClient {
     };
 
     return this.request<NetlifyUser>(this.endpoints.getUser, options);
+  }
+
+  async listSites(token: string, limit = 20): Promise<NetlifySite[]> {
+    const options: RequestOptions = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      searchParams: {
+        per_page: limit.toString(),
+      },
+      token,
+    };
+
+    return this.request<NetlifySite[]>(this.endpoints.listSites, options);
   }
 }
