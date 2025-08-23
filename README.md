@@ -16,34 +16,22 @@ No more context-switching. No more dashboard hunting.
 ---
 
 ## Demo
-─────────────────────────
 
-### Your conversation:
-```
-User: "Check my latest Vercel deployment"
-```
+<div align="center">
+  
+  <kbd>
+    <a href="./assets/demo.gif">
+      <img src="./assets/demo-preview.png" alt="Click to watch full demo" width="600" />
+    </a>
+  </kbd>
+  
+  <br /><br />
+  
+  <sub>**[Watch Full Demo](./assets/demo.gif)** · **[Live Badge Demo](https://mcp-netlify-demo.netlify.app/)**</sub>
+  
+</div>
 
-### AI Assistant's Response:
-
-> ## Deployment Status
-> 
-> ### Current Status
-> **Project:** my-app  
-> **Platform:** Vercel  
-> **Status:** ✅ Success  
-> **URL:** https://my-app.vercel.app  
-> **Duration:** 45s  
-> **Deployed:** 2 hours ago  
-> 
-> ### Commit Info
-> **SHA:** `abc123ef`  
-> **Message:** Update homepage hero section  
-> **Author:** John Doe  
-> 
-> Everything looks good - your deployment is live and running successfully!
-
-**Just ask your AI**: *"What's the status of my latest deployment?"*  
-Get instant answers without leaving your conversation.
+---
 
 ## Quick Start
 ─────────────────────────
