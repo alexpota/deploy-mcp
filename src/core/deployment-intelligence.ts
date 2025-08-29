@@ -1,6 +1,7 @@
 import { BaseAdapter } from "../adapters/base";
 import { VercelAdapter } from "../adapters/vercel";
 import { NetlifyAdapter } from "../adapters/netlify";
+import { CloudflarePagesAdapter } from "../adapters/cloudflare-pages";
 import type {
   WatchDeploymentArgs,
   CompareDeploymentsArgs,
@@ -128,10 +129,8 @@ export class DeploymentIntelligence {
         return process.env.VERCEL_TOKEN;
       case "netlify":
         return process.env.NETLIFY_TOKEN;
-      case "railway":
-        return process.env.RAILWAY_TOKEN;
-      case "render":
-        return process.env.RENDER_TOKEN;
+      case "cloudflare-pages":
+        return process.env.CLOUDFLARE_TOKEN;
       default:
         return undefined;
     }
@@ -182,11 +181,11 @@ export class DeploymentIntelligence {
         return new VercelAdapter();
       case "netlify":
         return new NetlifyAdapter();
+      case "cloudflare-pages":
+        return new CloudflarePagesAdapter();
       // Ready for future platforms
-      // case "railway":
-      //   return new RailwayAdapter();
-      // case "render":
-      //   return new RenderAdapter();
+      // case "github-pages":
+      //   return new GitHubPagesAdapter();
       default:
         throw new Error(`Unsupported platform: ${platform}`);
     }

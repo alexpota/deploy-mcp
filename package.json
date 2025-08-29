@@ -7,11 +7,13 @@
     "deployment",
     "vercel",
     "netlify",
+    "cloudflare-pages",
     "ai",
     "claude",
     "deployment-tracking",
     "netlify-deployment",
     "vercel-deployment",
+    "cloudflare-deployment",
     "deployment-status",
     "deployment-monitor",
     "ci-cd"

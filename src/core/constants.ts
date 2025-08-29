@@ -150,6 +150,7 @@ export const API_PARAMS = {
 // API configuration defaults
 export const API_CONFIG = {
   VERCEL_BASE_URL: "https://api.vercel.com",
+  CLOUDFLARE_BASE_URL: "https://api.cloudflare.com/client/v4",
   DEFAULT_TIMEOUT_MS: 10000,
   DEFAULT_RETRY_ATTEMPTS: 3,
   DEFAULT_DEPLOYMENT_LIMIT: 10,
@@ -160,8 +161,8 @@ export const API_CONFIG = {
 export const PLATFORM = {
   VERCEL: "vercel",
   NETLIFY: "netlify",
-  RAILWAY: "railway",
-  RENDER: "render",
+  CLOUDFLARE_PAGES: "cloudflare-pages",
+  GITHUB_PAGES: "github-pages",
 } as const;
 
 // Environment types
@@ -201,12 +202,30 @@ export const NETLIFY_STATES = {
   RETRYING: "retrying",
 } as const;
 
+// Cloudflare Pages deployment states from official API
+// Source: https://developers.cloudflare.com/api/resources/pages/
+export const CLOUDFLARE_PAGES_STATES = {
+  ACTIVE: "active",
+  SUCCESS: "success",
+  FAILED: "failed",
+  CANCELED: "canceled",
+  SKIPPED: "skipped",
+} as const;
+
 // Error messages for adapters
 export const ADAPTER_ERRORS = {
   TOKEN_REQUIRED:
+    "API token required. Set appropriate environment variable or pass token parameter.",
+  VERCEL_TOKEN_REQUIRED:
     "Vercel token required. Set VERCEL_TOKEN environment variable or pass token parameter.",
-  FETCH_DEPLOYMENT_FAILED: "Failed to fetch deployment status from Vercel",
+  NETLIFY_TOKEN_REQUIRED:
+    "Netlify token required. Set NETLIFY_TOKEN environment variable or pass token parameter.",
+  CLOUDFLARE_TOKEN_REQUIRED:
+    "Cloudflare token required. Set CLOUDFLARE_TOKEN environment variable or pass token parameter.",
+  FETCH_DEPLOYMENT_FAILED: "Failed to fetch deployment status",
   UNKNOWN_STATUS: "unknown",
+  CLOUDFLARE_ACCOUNT_ID_REQUIRED:
+    "Cloudflare account ID required. Provide as 'accountId:apiToken' or set CLOUDFLARE_ACCOUNT_ID",
 } as const;
 
 export type DeploymentState =

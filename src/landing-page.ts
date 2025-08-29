@@ -522,23 +522,23 @@ export const landingPageHTML = `<!DOCTYPE html>
           </p>
         </div>
 
-        <div class="platform">
+        <div class="platform active">
           <div class="platform-header">
-            <span class="platform-name">Railway</span>
-            <span class="platform-status soon">Soon</span>
+            <span class="platform-name">Cloudflare Pages</span>
+            <span class="platform-status">Ready</span>
           </div>
           <p class="platform-desc">
-            Railway integration with service monitoring coming next.
+            Fast edge deployments with free bandwidth and global CDN.
           </p>
         </div>
 
         <div class="platform">
           <div class="platform-header">
-            <span class="platform-name">Render</span>
+            <span class="platform-name">GitHub Pages</span>
             <span class="platform-status soon">Soon</span>
           </div>
           <p class="platform-desc">
-            Render support with service and database monitoring planned.
+            Direct GitHub integration with Actions-based deployment tracking.
           </p>
         </div>
       </div>
@@ -551,7 +551,8 @@ export const landingPageHTML = `<!DOCTYPE html>
           <pre style="margin: 0;">{
   "env": {
     "VERCEL_TOKEN": "your-vercel-token",
-    "NETLIFY_TOKEN": "your-netlify-token"
+    "NETLIFY_TOKEN": "your-netlify-token",
+    "CLOUDFLARE_TOKEN": "accountId:globalApiKey"
   }
 }</pre>
         </div>
@@ -638,7 +639,8 @@ export const landingPageHTML = `<!DOCTYPE html>
       "args": ["-y", "deploy-mcp"],
       "env": {
         "VERCEL_TOKEN": "your-vercel-token",
-        "NETLIFY_TOKEN": "your-netlify-token"
+        "NETLIFY_TOKEN": "your-netlify-token",
+        "CLOUDFLARE_TOKEN": "accountId:globalApiKey"
       }
     }
   }
@@ -693,7 +695,7 @@ export const landingPageHTML = `<!DOCTYPE html>
         <div class="badge-examples">
           <img src="https://img.shields.io/badge/vercel-success-22c55e" alt="Vercel Status">
           <img src="https://img.shields.io/badge/netlify-building-FCD34D" alt="Netlify Status">
-          <img src="https://img.shields.io/badge/railway-coming%20soon-gray" alt="Railway Status">
+          <img src="https://img.shields.io/badge/cloudflare%20pages-ready-22c55e" alt="Cloudflare Pages Status">
         </div>
 
         <div class="badge-code">
@@ -746,7 +748,8 @@ export const landingPageHTML = `<!DOCTYPE html>
             args: ['-y', 'deploy-mcp'],
             env: {
               VERCEL_TOKEN: 'your-vercel-token',
-              NETLIFY_TOKEN: 'your-netlify-token'
+              NETLIFY_TOKEN: 'your-netlify-token',
+              CLOUDFLARE_TOKEN: 'accountId:globalApiKey'
             }
           }
         }
@@ -758,7 +761,8 @@ export const landingPageHTML = `<!DOCTYPE html>
       const config = JSON.stringify({
         env: {
           VERCEL_TOKEN: 'your-vercel-token',
-          NETLIFY_TOKEN: 'your-netlify-token'
+          NETLIFY_TOKEN: 'your-netlify-token',
+          CLOUDFLARE_TOKEN: 'accountId:globalApiKey'
         }
       }, null, 2);
       copyToClipboard(config, event);

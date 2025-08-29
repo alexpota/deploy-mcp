@@ -489,4 +489,153 @@ describe("handleWebhook", () => {
       expect(result.message).toContain("Deployment status updated");
     });
   });
+
+  describe("Cloudflare Pages webhooks", () => {
+    it("should handle successful deployment", async () => {
+      mockRequest = new Request("http://localhost", {
+        method: "POST",
+        body: JSON.stringify({
+          deployment_id: "cf_deployment_123",
+          project_name: "test-project",
+          environment: "production",
+          status: "success",
+          url: "https://test-project.pages.dev",
+          commit_hash: "abc123",
+        }),
+      });
+
+      const result = await handleWebhook(
+        mockRequest,
+        "user",
+        "repo",
+        "cloudflare-pages",
+        mockEnv
+      );
+
+      expect(result.success).toBe(true);
+      expect(updateDeploymentStatus).toHaveBeenCalledWith(
+        "user",
+        "repo",
+        "cloudflare-pages",
+        "success",
+        mockEnv
+      );
+    });
+
+    it("should handle failed deployment", async () => {
+      mockRequest = new Request("http://localhost", {
+        method: "POST",
+        body: JSON.stringify({
+          deployment_id: "cf_deployment_456",
+          project_name: "test-project",
+          environment: "production",
+          status: "failed",
+        }),
+      });
+
+      const result = await handleWebhook(
+        mockRequest,
+        "user",
+        "repo",
+        "cloudflare-pages",
+        mockEnv
+      );
+
+      expect(result.success).toBe(true);
+      expect(updateDeploymentStatus).toHaveBeenCalledWith(
+        "user",
+        "repo",
+        "cloudflare-pages",
+        "failed",
+        mockEnv
+      );
+    });
+
+    it("should handle active deployment as building", async () => {
+      mockRequest = new Request("http://localhost", {
+        method: "POST",
+        body: JSON.stringify({
+          deployment_id: "cf_deployment_789",
+          project_name: "test-project",
+          environment: "preview",
+          status: "active",
+        }),
+      });
+
+      const result = await handleWebhook(
+        mockRequest,
+        "user",
+        "repo",
+        "cloudflare-pages",
+        mockEnv
+      );
+
+      expect(result.success).toBe(true);
+      expect(updateDeploymentStatus).toHaveBeenCalledWith(
+        "user",
+        "repo",
+        "cloudflare-pages",
+        "building",
+        mockEnv
+      );
+    });
+
+    it("should handle canceled deployment as failed", async () => {
+      mockRequest = new Request("http://localhost", {
+        method: "POST",
+        body: JSON.stringify({
+          deployment_id: "cf_deployment_999",
+          project_name: "test-project",
+          environment: "production",
+          status: "canceled",
+        }),
+      });
+
+      const result = await handleWebhook(
+        mockRequest,
+        "user",
+        "repo",
+        "cloudflare-pages",
+        mockEnv
+      );
+
+      expect(result.success).toBe(true);
+      expect(updateDeploymentStatus).toHaveBeenCalledWith(
+        "user",
+        "repo",
+        "cloudflare-pages",
+        "failed",
+        mockEnv
+      );
+    });
+
+    it("should handle skipped deployment as unknown", async () => {
+      mockRequest = new Request("http://localhost", {
+        method: "POST",
+        body: JSON.stringify({
+          deployment_id: "cf_deployment_skip",
+          project_name: "test-project",
+          environment: "preview",
+          status: "skipped",
+        }),
+      });
+
+      const result = await handleWebhook(
+        mockRequest,
+        "user",
+        "repo",
+        "cloudflare-pages",
+        mockEnv
+      );
+
+      expect(result.success).toBe(true);
+      expect(updateDeploymentStatus).toHaveBeenCalledWith(
+        "user",
+        "repo",
+        "cloudflare-pages",
+        "unknown",
+        mockEnv
+      );
+    });
+  });
 });

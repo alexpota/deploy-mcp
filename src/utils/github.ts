@@ -56,7 +56,7 @@ export function validateParams(
   platform: string
 ): boolean {
   const validName = /^[a-zA-Z0-9._-]+$/;
-  const validPlatforms = ["vercel", "netlify", "railway"];
+  const validPlatforms = ["vercel", "netlify", "cloudflare-pages"];
 
   return (
     validName.test(user) &&

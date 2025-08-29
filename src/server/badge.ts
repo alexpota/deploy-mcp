@@ -32,9 +32,9 @@ const PLATFORM_CONFIG = {
     label: "Netlify",
     logo: "netlify",
   },
-  railway: {
-    label: "Railway",
-    logo: "railway",
+  "cloudflare-pages": {
+    label: "Cloudflare Pages",
+    logo: "cloudflare",
   },
 } as const;
 

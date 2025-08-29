@@ -26,6 +26,7 @@ describe("MCPHandler", () => {
 
   afterEach(() => {
     delete process.env.VERCEL_TOKEN;
+    delete process.env.CLOUDFLARE_TOKEN;
   });
 
   describe("handleToolCall", () => {
@@ -120,6 +121,68 @@ describe("MCPHandler", () => {
         "test-project",
         "test-token",
         5
+      );
+    });
+
+    it("should handle Cloudflare Pages with CLOUDFLARE_TOKEN", async () => {
+      const cloudflareAdapter = new MockAdapter();
+      cloudflareAdapter.name = "cloudflare-pages";
+      const adapters = new Map([["cloudflare-pages", cloudflareAdapter]]);
+      const cfHandler = new MCPHandler(adapters);
+
+      // Set the environment variable with correct token name
+      process.env.CLOUDFLARE_TOKEN = "cf-test-token";
+
+      cloudflareAdapter.listProjects.mockResolvedValue([
+        {
+          id: "cf-proj1",
+          name: "CF Project 1",
+          url: "https://cf-proj1.pages.dev",
+        },
+      ]);
+
+      const result = await cfHandler.handleToolCall("list_projects", {
+        platform: "cloudflare-pages",
+        limit: 10,
+      });
+
+      expect(result.version).toBe("1.0");
+      expect(result.tool).toBe("list_projects");
+      expect(result.display).toContain("Projects on cloudflare-pages");
+      expect(result.display).toContain("CF Project 1");
+      expect(cloudflareAdapter.listProjects).toHaveBeenCalledWith(
+        "cf-test-token",
+        10
+      );
+    });
+
+    it("should use fallback CLOUDFLARE_TOKEN for Cloudflare Pages", async () => {
+      const cloudflareAdapter = new MockAdapter();
+      cloudflareAdapter.name = "cloudflare-pages";
+      const adapters = new Map([["cloudflare-pages", cloudflareAdapter]]);
+      const cfHandler = new MCPHandler(adapters);
+
+      // Set the general Cloudflare token (fallback)
+      process.env.CLOUDFLARE_TOKEN = "general-cf-token";
+
+      cloudflareAdapter.listProjects.mockResolvedValue([
+        {
+          id: "cf-proj1",
+          name: "CF Project 1",
+          url: "https://cf-proj1.pages.dev",
+        },
+      ]);
+
+      const result = await cfHandler.handleToolCall("list_projects", {
+        platform: "cloudflare-pages",
+        limit: 10,
+      });
+
+      expect(result.version).toBe("1.0");
+      expect(result.tool).toBe("list_projects");
+      expect(cloudflareAdapter.listProjects).toHaveBeenCalledWith(
+        "general-cf-token",
+        10
       );
     });
   });

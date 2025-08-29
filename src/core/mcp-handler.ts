@@ -14,6 +14,7 @@ import {
   PLATFORM,
   VERCEL_STATES,
   NETLIFY_STATES,
+  CLOUDFLARE_PAGES_STATES,
 } from "./constants.js";
 import { ResponseFormatter, MCPResponse } from "./response-formatter.js";
 
@@ -165,11 +166,22 @@ export class MCPHandler {
         const formattedStatus = this.formatResponse(status, validated.platform);
         return ResponseFormatter.formatStatus(formattedStatus);
       } else {
+        const tokenEnvKey = `${validated.platform.toUpperCase().replace(/-/g, "_")}_TOKEN`;
+        const generalTokenKey = validated.platform.startsWith("cloudflare-")
+          ? "CLOUDFLARE_TOKEN"
+          : validated.platform.startsWith("github-")
+            ? "GITHUB_TOKEN"
+            : null;
+
+        const token =
+          validated.token ||
+          process.env[tokenEnvKey] ||
+          (generalTokenKey ? process.env[generalTokenKey] : null) ||
+          "";
+
         const deployments = await adapter.getRecentDeployments(
           validated.project,
-          validated.token ||
-            process.env[`${validated.platform.toUpperCase()}_TOKEN`] ||
-            "",
+          token,
           validated.limit
         );
 
@@ -234,6 +246,34 @@ export class MCPHandler {
             }
           : undefined,
       };
+    } else if (platform === PLATFORM.CLOUDFLARE_PAGES) {
+      return {
+        id: deployment.id,
+        status: this.mapCloudflareState(
+          deployment.latest_stage?.status || "unknown"
+        ),
+        url: deployment.url,
+        projectName: deployment.project_name,
+        platform: platform,
+        timestamp: deployment.created_on,
+        duration:
+          deployment.latest_stage?.ended_on &&
+          deployment.latest_stage?.started_on
+            ? Math.floor(
+                (new Date(deployment.latest_stage.ended_on).getTime() -
+                  new Date(deployment.latest_stage.started_on).getTime()) /
+                  1000
+              )
+            : undefined,
+        environment: deployment.environment || "production",
+        commit: deployment.source?.config
+          ? {
+              sha: deployment.source.config.commit_hash,
+              message: deployment.source.config.commit_message,
+              author: undefined, // Cloudflare doesn't provide author
+            }
+          : undefined,
+      };
     }
     return deployment;
   }
@@ -264,6 +304,22 @@ export class MCPHandler {
         return "failed";
       default:
         return "building";
+    }
+  }
+
+  private mapCloudflareState(state: string): string {
+    switch (state) {
+      case CLOUDFLARE_PAGES_STATES.SUCCESS:
+        return "success";
+      case CLOUDFLARE_PAGES_STATES.FAILED:
+      case CLOUDFLARE_PAGES_STATES.CANCELED:
+        return "failed";
+      case CLOUDFLARE_PAGES_STATES.ACTIVE:
+        return "building";
+      case CLOUDFLARE_PAGES_STATES.SKIPPED:
+        return "unknown";
+      default:
+        return "unknown";
     }
   }
 
@@ -374,12 +430,24 @@ ${messages.join("\n\n")}
       throw new Error(`Unsupported platform: ${validated.platform}`);
     }
 
-    const tokenEnvKey = `${validated.platform.toUpperCase()}_TOKEN`;
-    const token = validated.token || process.env[tokenEnvKey];
+    const tokenEnvKey = `${validated.platform.toUpperCase().replace(/-/g, "_")}_TOKEN`;
+    const generalTokenKey = validated.platform.startsWith("cloudflare-")
+      ? "CLOUDFLARE_TOKEN"
+      : validated.platform.startsWith("github-")
+        ? "GITHUB_TOKEN"
+        : null;
+
+    const token =
+      validated.token ||
+      process.env[tokenEnvKey] ||
+      (generalTokenKey ? process.env[generalTokenKey] : null);
 
     if (!token) {
+      const tokenOptions = generalTokenKey
+        ? `${tokenEnvKey} or ${generalTokenKey} environment variable`
+        : `${tokenEnvKey} environment variable`;
       throw new Error(
-        `Authentication required. Please provide a token or set ${tokenEnvKey} environment variable.`
+        `Authentication required. Please provide a token or set ${tokenOptions}.`
       );
     }
 
