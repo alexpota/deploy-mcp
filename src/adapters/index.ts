@@ -14,6 +14,11 @@ export type { VercelDeployment, VercelConfig } from "./vercel/index.js";
 export { NetlifyAdapter } from "./netlify/index.js";
 export type { NetlifyDeploy, NetlifyConfig } from "./netlify/types.js";
 
+export { CloudflarePagesAdapter } from "./cloudflare-pages/index.js";
+export type {
+  CloudflarePagesDeployment,
+  CloudflarePagesProject,
+} from "./cloudflare-pages/types.js";
+
 // Future adapters will be exported here:
-// export { RailwayAdapter } from './railway/index.js';
-// export { RenderAdapter } from './render/index.js';
+// export { GitHubPagesAdapter } from './github-pages/index.js';

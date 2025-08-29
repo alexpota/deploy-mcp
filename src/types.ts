@@ -35,8 +35,7 @@ export interface Env {
   BADGE_KV: KVNamespace;
   VERCEL_TOKEN?: string;
   NETLIFY_TOKEN?: string;
-  RAILWAY_TOKEN?: string;
-  RENDER_TOKEN?: string;
+  CLOUDFLARE_TOKEN?: string;
   // Optional webhook secret for enhanced security (not required for public repos)
   VERCEL_WEBHOOK_SECRET?: string;
 }

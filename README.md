@@ -8,6 +8,7 @@ Track deployments across all platforms directly in your AI conversation.
 No more context-switching. No more dashboard hunting.
 
 [![npm version](https://img.shields.io/npm/v/deploy-mcp.svg?style=for-the-badge&color=ff6b6b)](https://www.npmjs.com/package/deploy-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/deploy-mcp.svg?style=for-the-badge&color=00d2d3)](https://www.npmjs.com/package/deploy-mcp)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=for-the-badge)](https://github.com/alexpota/deploy-mcp/blob/main/LICENSE)
 [![Website](https://img.shields.io/badge/website-deploy--mcp.io-ff8e53?style=for-the-badge)](https://deploy-mcp.io)
 
@@ -53,8 +54,8 @@ deploy-mcp supports multiple deployment platforms simultaneously. Configure as m
 |----------|--------|---------------|----------|
 | **Vercel** | ✅ Ready | `VERCEL_TOKEN` | Status, Logs, History, Real-time Monitoring |
 | **Netlify** | ✅ Ready | `NETLIFY_TOKEN` | Status, Logs, History, Real-time Monitoring |
-| **Railway** | Coming Soon | `RAILWAY_TOKEN` | - |
-| **Render** | Coming Soon | `RENDER_TOKEN` | - |
+| **Cloudflare Pages** | ✅ Ready | `CLOUDFLARE_TOKEN` | Status, Logs, History, Real-time Monitoring |
+| **GitHub Pages** | 🚧 Coming Soon | `GITHUB_TOKEN` | - |
 
 ### Multi-Platform Configuration
 
@@ -68,7 +69,8 @@ You can use **multiple platforms simultaneously** by providing tokens for each p
       "args": ["-y", "deploy-mcp"],
       "env": {
         "VERCEL_TOKEN": "your-vercel-token",
-        "NETLIFY_TOKEN": "your-netlify-token"
+        "NETLIFY_TOKEN": "your-netlify-token",
+        "CLOUDFLARE_TOKEN": "accountId:globalApiKey"
         // Add more platform tokens as needed
       }
     }
@@ -140,6 +142,46 @@ You can use **multiple platforms simultaneously** by providing tokens for each p
    - `"Show deployment history for site-name"`
 
 4. **Required permissions:** Read access to sites and deploys
+
+</details>
+
+### Cloudflare Pages
+
+<details>
+<summary><strong>Setup Instructions</strong></summary>
+
+1. **Get your API token:**
+   - Go to [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
+   - Click "Create Token"
+   - Use "Custom token" with these permissions:
+     - **Zone:Zone:Read**
+     - **Zone:Page Rules:Read**
+     - **Account:Cloudflare Pages:Edit**
+   - Or use your Global API Key (format: `accountId:globalApiKey`)
+   - Copy the token
+
+2. **Add to your AI assistant configuration:**
+   ```json
+   {
+     "env": {
+       "CLOUDFLARE_TOKEN": "your-cloudflare-token-or-accountId:globalApiKey"
+     }
+   }
+   ```
+
+3. **Available commands:**
+   - `"Check my Cloudflare Pages deployment for project-name"`
+   - `"What's the status of my latest Cloudflare Pages deployment?"`
+   - `"Show me Cloudflare Pages deployment logs"`
+   - `"Watch my Cloudflare Pages deployment progress"`
+   - `"List all my Cloudflare Pages projects"`
+   - `"Show deployment history for project-name"`
+
+4. **Token formats supported:**
+   - **API Token**: `your-api-token` (requires `CLOUDFLARE_ACCOUNT_ID` env var)
+   - **Global API Key**: `accountId:globalApiKey` (all-in-one format)
+
+5. **Required permissions:** Account access to Cloudflare Pages
 
 </details>
 

@@ -76,7 +76,7 @@ We welcome feature suggestions! Please:
 4. **Commit your changes**:
    - Use [Conventional Commits](https://conventionalcommits.org/) format
    - Examples:
-     - `feat: add support for Railway platform`
+     - `feat: add support for Cloudflare Pages platform`
      - `fix: handle API timeout errors properly`
      - `docs: update installation instructions`
 

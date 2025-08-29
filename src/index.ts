@@ -9,6 +9,7 @@ import { MCPHandler } from "./core/mcp-handler.js";
 import {
   VercelAdapter,
   NetlifyAdapter,
+  CloudflarePagesAdapter,
   BaseAdapter,
 } from "./adapters/index.js";
 import { tools } from "./core/tools.js";
@@ -17,6 +18,7 @@ const handler = new MCPHandler(
   new Map<string, BaseAdapter>([
     ["vercel", new VercelAdapter()],
     ["netlify", new NetlifyAdapter()],
+    ["cloudflare-pages", new CloudflarePagesAdapter()],
   ])
 );
 

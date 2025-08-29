@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 // Define supported platforms - ready for future expansion
-const SUPPORTED_PLATFORMS = ["vercel", "netlify"] as const;
+const SUPPORTED_PLATFORMS = ["vercel", "netlify", "cloudflare-pages"] as const;
 // Future platforms ready to be added when implemented
-// const ALL_PLATFORMS = ["vercel", "netlify", "railway", "render"] as const;
+// const ALL_PLATFORMS = ["vercel", "netlify", "cloudflare-pages", "github-pages"] as const;
 
 export const checkDeploymentStatusSchema = z.object({
   platform: z.enum(SUPPORTED_PLATFORMS).describe("The deployment platform"),
@@ -113,7 +113,7 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel", "netlify"],
+          enum: SUPPORTED_PLATFORMS as unknown as string[],
           description: "The deployment platform",
         },
         project: {
@@ -146,7 +146,7 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel", "netlify"],
+          enum: SUPPORTED_PLATFORMS as unknown as string[],
           description: "The deployment platform",
         },
         project: {
@@ -176,7 +176,7 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel", "netlify"],
+          enum: SUPPORTED_PLATFORMS as unknown as string[],
           description: "The deployment platform",
         },
         project: {
@@ -232,7 +232,7 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel", "netlify"],
+          enum: SUPPORTED_PLATFORMS as unknown as string[],
           description: "The deployment platform",
         },
         deploymentId: {
@@ -268,7 +268,7 @@ export const tools = [
       properties: {
         platform: {
           type: "string",
-          enum: ["vercel", "netlify"],
+          enum: SUPPORTED_PLATFORMS as unknown as string[],
           description: "The deployment platform",
         },
         limit: {

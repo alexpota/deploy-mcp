@@ -119,7 +119,9 @@ describe("GitHub Utils", () => {
     it("should return true for valid parameters", () => {
       expect(validateParams("validuser", "validrepo", "vercel")).toBe(true);
       expect(validateParams("user123", "repo-name", "netlify")).toBe(true);
-      expect(validateParams("user.name", "repo_name", "railway")).toBe(true);
+      expect(validateParams("user.name", "repo_name", "cloudflare-pages")).toBe(
+        true
+      );
     });
 
     it("should return false for invalid user names", () => {
@@ -145,7 +147,7 @@ describe("GitHub Utils", () => {
     it("should accept all supported platforms", () => {
       expect(validateParams("user", "repo", "vercel")).toBe(true);
       expect(validateParams("user", "repo", "netlify")).toBe(true);
-      expect(validateParams("user", "repo", "railway")).toBe(true);
+      expect(validateParams("user", "repo", "cloudflare-pages")).toBe(true);
     });
 
     it("should handle edge cases", () => {

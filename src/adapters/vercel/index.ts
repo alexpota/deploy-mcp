@@ -32,7 +32,7 @@ export class VercelAdapter extends BaseAdapter {
   ): Promise<DeploymentStatus> {
     const apiToken = token || process.env.VERCEL_TOKEN;
     if (!apiToken) {
-      throw new Error(ADAPTER_ERRORS.TOKEN_REQUIRED);
+      throw new Error(ADAPTER_ERRORS.VERCEL_TOKEN_REQUIRED);
     }
 
     try {

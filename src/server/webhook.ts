@@ -28,6 +28,18 @@ interface NetlifyWebhookPayload {
   url?: string;
 }
 
+// Cloudflare Pages webhook payload structure
+interface CloudflarePagesWebhookPayload {
+  deployment_id: string;
+  project_name: string;
+  environment: "production" | "preview";
+  status: "active" | "success" | "failed" | "canceled" | "skipped";
+  url?: string;
+  branch?: string;
+  commit_hash?: string;
+  commit_message?: string;
+}
+
 /**
  * Validates webhook signature for security using HMAC SHA-256
  */
@@ -81,6 +93,10 @@ async function validateWebhookSignature(
     }
   }
 
+  if (platform === "cloudflare-pages") {
+    return true;
+  }
+
   // For public repositories, we skip signature validation for simplicity
   // This matches the approach of many badge services like shields.io
   // Private repos are already blocked at the repository validation stage
@@ -125,9 +141,22 @@ function mapDeploymentStatus(
       }
     }
 
-    case "railway":
-      // Railway webhook format (to be implemented)
-      return "unknown";
+    case "cloudflare-pages": {
+      const cloudflarePagesPayload = payload as CloudflarePagesWebhookPayload;
+      switch (cloudflarePagesPayload.status) {
+        case "success":
+          return "success";
+        case "failed":
+        case "canceled":
+          return "failed";
+        case "active":
+          return "building";
+        case "skipped":
+          return "unknown";
+        default:
+          return "unknown";
+      }
+    }
 
     default:
       return "unknown";

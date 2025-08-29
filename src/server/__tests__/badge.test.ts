@@ -165,15 +165,15 @@ describe("Badge Generation", () => {
         "netlify",
         mockEnv
       );
-      const railwayResult = await generateBadgeData(
+      const cloudflarePagesResult = await generateBadgeData(
         "user",
         "repo",
-        "railway",
+        "cloudflare-pages",
         mockEnv
       );
 
       expect(netlifyResult.label).toBe("Netlify");
-      expect(railwayResult.label).toBe("Railway");
+      expect(cloudflarePagesResult.label).toBe("Cloudflare Pages");
     });
 
     it("should handle KV storage errors gracefully", async () => {
@@ -222,10 +222,13 @@ describe("Badge Generation", () => {
 
     it("should generate error badge for different platforms", () => {
       const netlifyResult = generateErrorBadge("netlify", "Error");
-      const railwayResult = generateErrorBadge("railway", "Error");
+      const cloudflarePagesResult = generateErrorBadge(
+        "cloudflare-pages",
+        "Error"
+      );
 
       expect(netlifyResult.label).toBe("Netlify");
-      expect(railwayResult.label).toBe("Railway");
+      expect(cloudflarePagesResult.label).toBe("Cloudflare Pages");
     });
   });
 
@@ -282,7 +285,7 @@ describe("Badge Generation", () => {
       await updateDeploymentStatus(
         "user",
         "repo",
-        "railway",
+        "cloudflare-pages",
         "building",
         mockEnv
       );
@@ -295,7 +298,7 @@ describe("Badge Generation", () => {
         }
       );
       expect(mockEnv.BADGE_KV.put).toHaveBeenCalledWith(
-        "user/repo/railway",
+        "user/repo/cloudflare-pages",
         "building",
         {
           expirationTtl: 86400 * 30,
