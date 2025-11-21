@@ -15,7 +15,9 @@ describe("DeploymentIntelligence", () => {
       getRecentDeployments: vi.fn(),
       getDeploymentLogs: vi.fn(),
     };
-    (VercelAdapter as any).mockImplementation(() => mockAdapter);
+    (VercelAdapter as any).mockImplementation(function () {
+      return mockAdapter;
+    });
     intelligence = new DeploymentIntelligence("vercel");
   });
 
