@@ -23,7 +23,9 @@ describe("CloudflarePagesAdapter", () => {
     };
 
     // Mock the API constructor
-    vi.mocked(CloudflarePagesAPI).mockImplementation(() => mockAPI);
+    vi.mocked(CloudflarePagesAPI).mockImplementation(function () {
+      return mockAPI;
+    });
   });
 
   describe("constructor", () => {

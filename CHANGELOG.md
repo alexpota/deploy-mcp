@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.2] - 2025-11-21
+
+### Fixed
+
+- Updated test mock implementations for Vitest 4.0 compatibility
+- Mock constructors now use `function` keyword instead of arrow functions as required by Vitest 4.0
+
+### Changed
+
+- Upgraded to Vitest 4.0.4 from 3.2.4
+- Updated all development dependencies to latest versions
+
 ## [0.1.0] - 2025-01-15
 
 ### Added
