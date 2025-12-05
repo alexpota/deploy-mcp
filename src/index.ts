@@ -26,7 +26,7 @@ const server = new Server(
   {
     name: "deploy-mcp",
     version: "0.1.0",
-    description: "Universal deployment tracker for AI assistants",
+    title: "Deploy MCP - Universal Deployment Tracker",
   },
   {
     capabilities: {
