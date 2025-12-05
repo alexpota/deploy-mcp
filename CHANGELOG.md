@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.4] - 2025-12-05
+
+### Security
+
+- Updated @modelcontextprotocol/sdk from 1.20.2 to 1.24.0 to resolve CVE-2025-66414 (HIGH severity DNS rebinding vulnerability)
+- Updated express from 5.1.0 to 5.2.1 to resolve CVE-2025-13466 (MODERATE severity DoS vulnerability)
+- Updated body-parser from 2.2.0 to 2.2.1 to resolve CVE-2025-13466 (MODERATE severity DoS vulnerability)
+
+### Changed
+
+- Replaced `description` with `title` property in MCP Server constructor for SDK 1.24.0 compatibility
+
 ## [0.6.2] - 2025-11-21
 
 ### Fixed

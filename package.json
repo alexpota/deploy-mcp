@@ -1,6 +1,6 @@
 {
   "name": "deploy-mcp",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "description": "Universal deployment tracker for AI assistants",
   "keywords": [
     "mcp",
@@ -60,7 +60,7 @@
     "release:major": "npm version major && git push origin main --tags"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.11.2",
+    "@modelcontextprotocol/sdk": "^1.24.0",
     "zod": "^4.0.14"
   },
   "devDependencies": {
