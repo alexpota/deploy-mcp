@@ -60,7 +60,7 @@
     "release:major": "npm version major && git push origin main --tags"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.24.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "zod": "^4.0.14"
   },
   "devDependencies": {
@@ -78,7 +78,7 @@
     "tsx": "^4.19.2",
     "typescript": "^5.9.2",
     "vitest": "^4.0.4",
-    "wrangler": "^4.27.0"
+    "wrangler": "^4.59.1"
   },
   "engines": {
     "node": ">=22.0.0"
