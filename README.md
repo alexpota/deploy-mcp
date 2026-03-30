@@ -45,6 +45,10 @@ npx deploy-mcp
 
 That's it! The server is now running and ready to be configured in your AI assistant.
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/deploy-mcp-deploy-mcp).
+
 ## Supported Platforms
 ─────────────────────────
 
