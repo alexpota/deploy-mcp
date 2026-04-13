@@ -65,10 +65,10 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250803.0",
-    "@types/node": "^24.1.0",
+    "@types/node": "^25.6.0",
     "@typescript-eslint/eslint-plugin": "^8.38.1-alpha.7",
     "@typescript-eslint/parser": "^8.38.1-alpha.7",
-    "eslint": "^9.32.0",
+    "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "husky": "^9.1.7",
@@ -76,7 +76,7 @@
     "prettier": "^3.6.2",
     "tsup": "^8.3.5",
     "tsx": "^4.19.2",
-    "typescript": "^5.9.2",
+    "typescript": "^6.0.2",
     "vitest": "^4.0.4",
     "wrangler": "^4.59.1"
   },
